@@ -94,7 +94,11 @@ namespace Game
         private async * getSlots()
         {
             const fileNames = await Interop.Bridge.SaveFiles();
-            return fileNames.map(f => parseInt(f)).filter(x => !isNaN(x));
+            for (const fileName of fileNames)
+            {
+                const slot = parseInt(fileName);
+                if (!isNaN(slot)) yield slot;
+            }
         }
 
         get saveStates(): AsyncIterablePromise<[number, SaveState]>

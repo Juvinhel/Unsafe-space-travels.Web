@@ -45,12 +45,12 @@ namespace Views
             yield generateLine(slot, saveState, allowSaving);
     }
 
-    function generateLine(index: number, saveState: Game.SaveState, allowSaving: boolean)
+    function generateLine(slot: number, saveState: Game.SaveState, allowSaving: boolean)
     {
         const highlight = saveState.id == Game.id && saveState.playTime == Game.playTime;
         return (
             <div class={ ["saveState", highlight ? "highlight" : null] } name={ name }>
-                <span class="slot">{ index + 1 }</span>
+                <span class="slot">{ slot }</span>
                 <button class="save" onclick={ doSave } disabled={ !allowSaving }>Save</button>
                 <button class="load" onclick={ doLoad }>Load</button>
                 <span class="name">{ saveState.name }</span>
