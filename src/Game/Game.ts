@@ -15,13 +15,13 @@ namespace Game
         Game.storyManager.show("Game");
     }
 
-    export function load(saveGame: Savegame)
+    export function load(saveState: SaveState)
     {
-        Game.id = saveGame.id;
+        Game.id = saveState.id;
         Game.sessionStart = new Date();
-        Game.playTime = saveGame.playTime;
+        Game.playTime = saveState.playTime;
 
-        Game.data = saveGame.data;
+        Game.data = saveState.data;
         deepLoad(Game.data, Game.defaultData);
 
         if (Game.data.storyLink) Game.storyManager.show(Game.data.storyLink);
@@ -42,7 +42,7 @@ namespace Game
         }
     }
 
-    export function save(): Savegame
+    export function save(): SaveState
     {
         const elapsedMilliseconds = Number(new Date()) - Number(Game.sessionStart);
         const elapsedSeconds = Math.round(elapsedMilliseconds / 1000);
@@ -52,8 +52,8 @@ namespace Game
 
             id: Game.id,
             playTime: Game.playTime + elapsedSeconds,
-
             date: new Date(),
+            name: "",
 
             data: Game.data,
         };

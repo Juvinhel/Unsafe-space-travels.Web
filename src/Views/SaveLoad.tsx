@@ -5,7 +5,7 @@ namespace Views
         UI.Dialog.show(SaveLoad, { title: "Save/Load", allowClose: true, mode: "fill" }, allowSaving);
     }
 
-    export function SaveLoad(allowSaving?: boolean)
+    export async function SaveLoad(allowSaving?: boolean)
     {
         if (allowSaving == null) allowSaving = true;
 
@@ -21,7 +21,7 @@ namespace Views
                             e.preventDefault();
                         });
                 } }>
-                <div class="header savegame">
+                <div class="header saveState">
                     <span>#</span>
                     <span>Save</span>
                     <span>Load</span>
@@ -33,71 +33,68 @@ namespace Views
                     <span>Export</span>
                 </div>
                 <div class="lines">
-                    { [...generateLines(allowSaving)] }
-                    { generateNewLine(allowSaving) }
+                    { await Array.fromAsync(generateLines(allowSaving)) }
                 </div>
             </div>);
     }
 
-    function* generateLines(allowSaving: boolean)
+    async function* generateLines(allowSaving: boolean)
     {
-        let i = 0;
-        for (const [name, savegame] of Game.SaveManager.savegames)
-            yield generateLine(i++, name, savegame, allowSaving);
+        yield generateNewLine(allowSaving);
+        for (const [slot, saveState] of (await Game.SaveManager.saveStates).orderBy(x => x[1].date).reverse())
+            yield generateLine(slot, saveState, allowSaving);
     }
 
-    function generateLine(index: number, name: string, savegame: Game.Savegame, allowSaving: boolean)
+    function generateLine(index: number, saveState: Game.SaveState, allowSaving: boolean)
     {
-        const highlight = savegame.id == Game.id && savegame.playTime == Game.playTime;
+        const highlight = saveState.id == Game.id && saveState.playTime == Game.playTime;
         return (
-            <div class={ ["savegame", highlight ? "highlight" : null] } name={ name }>
+            <div class={ ["saveState", highlight ? "highlight" : null] } name={ name }>
                 <span class="slot">{ index + 1 }</span>
-                <button class="save" onclick={ (e: Event) => doSave(e) } disabled={ !allowSaving }>Save</button>
-                <button class="load" onclick={ (e: Event) => doLoad(e) }>Load</button>
-                <span class="name">{ name }</span>
-                <span class="savedate">{ dateTimeToReadableString(savegame.date) }</span>
-                <span class="playtime">{ timeToReadableString(savegame.playTime, true) }</span>
-                <button class="delete" onclick={ (e: Event) => doDelete(e) }>Delete</button>
-                <button class="export" onclick={ (e: Event) => doExport(e) }>Export</button>
-                <button class="import" onclick={ (e: Event) => doImport(e) }>Import</button>
+                <button class="save" onclick={ doSave } disabled={ !allowSaving }>Save</button>
+                <button class="load" onclick={ doLoad }>Load</button>
+                <span class="name">{ saveState.name }</span>
+                <span class="savedate">{ dateTimeToReadableString(saveState.date) }</span>
+                <span class="playtime">{ timeToReadableString(saveState.playTime, true) }</span>
+                <button class="delete" onclick={ doDelete }>Delete</button>
+                <button class="export" onclick={ doExport }>Export</button>
+                <button class="import" onclick={ doImport }>Import</button>
             </div>);
     }
 
     function generateNewLine(allowSaving: boolean)
     {
-        const savegame = Game.save();
+        const saveState = Game.save();
 
         return (
-            <div class={ ["savegame", "slot-new"] }>
+            <div class={ ["saveState", "slot-new"] }>
                 <span class="slot">new</span>
                 <button class="save" disabled={ !allowSaving } title={ "Save Slot new" } onclick={ (e: Event) => doSave(e) }>Save</button>
                 <button class="load" disabled>Load</button>
                 <input class="name" type="text" value="New" />
-                <span class="savedate">{ dateTimeToReadableString(savegame.date) }</span>
-                <span class="playtime">{ timeToReadableString(savegame.playTime, true) }</span>
+                <span class="savedate">{ dateTimeToReadableString(saveState.date) }</span>
+                <span class="playtime">{ timeToReadableString(saveState.playTime, true) }</span>
                 <button class="delete" disabled>Delete</button>
-                <button class="export" onclick={ (e: Event) => doExport(e) } disabled={ !allowSaving } >Export</button>
-                <button class="import" onclick={ (e: Event) => doImport(e) }>Import</button>
+                <button class="export" onclick={ doExport } disabled={ !allowSaving } >Export</button>
+                <button class="import" onclick={ doImport }>Import</button>
             </div>);
     }
 
-    function refresh()
+    async function refresh()
     {
         const saveLoad = document.getElementById("save-load");
         const lines = saveLoad.querySelector(".lines") as HTMLDivElement;
         const allowSaving = !saveLoad.classList.contains("load-only");
+        lines.clearChildren();
 
-        for (const oldLine of [...lines.querySelectorAll(".savegame:not(.slot-new)")])
-            oldLine.remove();
-
-        for (const line of generateLines(allowSaving))
-            lines.insertBefore(line, lines.lastChild);
+        for (const line of await Array.fromAsync(generateLines(allowSaving)))
+            lines.appendChild(line);
     }
 
     function getName(e: Event)
     {
-        const savegameElement = (e.currentTarget as Element).closest(".savegame");
-        const nameElement = savegameElement.querySelector(".name");
+        const saveStateElement = (e.currentTarget as Element).closest(".saveState");
+        const nameElement = saveStateElement.querySelector(".name");
         if (nameElement instanceof HTMLSpanElement)
             return nameElement.textContent;
         if (nameElement instanceof HTMLInputElement)
@@ -105,62 +102,71 @@ namespace Views
         throw new Error("NameElement not found!");
     }
 
-    function doSave(e: Event)
+    async function doSave(e: Event)
     {
+        const saveStateElement = (e.currentTarget as Element).closest(".saveState");
+        let slot = parseInt(saveStateElement.querySelector(".slot").textContent);
         const name = getName(e);
+        const slots = await Game.SaveManager.slots;
+        if (isNaN(slot)) slot = slots.length == 0 ? 1 : slots.max(x => x) + 1;
 
-        if (Game.SaveManager.exists(name) && !confirm("Overwrite?")) return;
+        if (slots.includes(slot) && !confirm("Overwrite?")) return;
 
-        const savegame = Game.save();
-        Game.SaveManager.save(savegame, name);
-        refresh();
+        const saveState = Game.save();
+        saveState.name = name;
+        await Game.SaveManager.save(slot, saveState);
+        await refresh();
     }
 
-    function doLoad(e: Event)
+    async function doLoad(e: Event)
     {
-        const name = getName(e);
+        const saveStateElement = (e.currentTarget as Element).closest(".saveState");
+        const slot = parseInt(saveStateElement.querySelector(".slot").textContent);
 
-        if (this.CurrentSavegame && !confirm("Load?")) return;
+        if (this.CurrentsaveState && !confirm("Load?")) return;
 
-        const savegame = Game.SaveManager.load(name);
-        Game.load(savegame);
+        const saveState = await Game.SaveManager.load(slot);
+        Game.load(saveState);
 
         UI.Dialog.close(document.getElementById("save-load"));
     }
 
-    function doDelete(e: Event)
+    async function doDelete(e: Event)
     {
-        const name = getName(e);
+        const saveStateElement = (e.currentTarget as Element).closest(".saveState");
+        const slot = parseInt(saveStateElement.querySelector(".slot").textContent);
 
         if (!confirm("Delete?")) return;
 
-        Game.SaveManager.delete(name);
-        refresh();
+        await Game.SaveManager.delete(slot);
+        await refresh();
     }
 
-    function doImport(e: Event)
+    async function doImport(e: Event)
     {
-        const name = getName(e);
+        const saveStateElement = (e.currentTarget as Element).closest(".saveState");
+        const slot = parseInt(saveStateElement.querySelector(".slot").textContent);
 
-        if (Game.SaveManager.exists(name) && !confirm("Overwrite?")) return;
+        const slots = await Game.SaveManager.slots;
+        if (slots.includes(slot) && !confirm("Overwrite?")) return;
 
-        uploadObject().then((savegame: Game.Savegame) =>
-        {
-            Game.SaveManager.save(savegame, name);
-            refresh();
-        });
+        const saveState: Game.SaveState = await uploadObject();
+        await Game.SaveManager.save(slot, saveState);
+        await refresh();
     }
 
-    function doExport(e: Event)
+    async function doExport(e: Event)
     {
-        const name = getName(e);
-        const savegame = Game.SaveManager.load(name) ?? Game.save();
-        downloadObject(savegame, name);
+        const saveStateElement = (e.currentTarget as Element).closest(".saveState");
+        const slot = parseInt(saveStateElement.querySelector(".slot").textContent);
+
+        const saveState = (await Game.SaveManager.load(slot)) ?? Game.save();
+        downloadObject(saveState, slot.toFixed());
     }
 
-    function downloadObject(object: any, name: string)
+    function downloadObject(saveState: Game.SaveState, name: string)
     {
-        const dataStr = "data:text/yaml;charset=utf-8," + encodeURIComponent(YAML.stringify(object));
+        const dataStr = "data:text/yaml;charset=utf-8," + encodeURIComponent(Game.serializeSaveState(saveState));
         const downloadAnchorNode = document.createElement("a");
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", name + ".yaml");
@@ -169,23 +175,23 @@ namespace Views
         downloadAnchorNode.remove();
     }
 
-    function uploadObject(): Promise<Game.Savegame>
+    function uploadObject(): Promise<Game.SaveState>
     {
         const uploadForm = document.createElement("form");
         uploadForm.style.display = "none";
         const uploadInput = document.createElement("input");
         uploadInput.type = "file";
-        uploadInput.id = "savegame-upload";
+        uploadInput.id = "saveState-upload";
         uploadForm.appendChild(uploadInput);
 
-        const promise = new Promise<Game.Savegame>((resolve, reject) =>
+        const promise = new Promise<Game.SaveState>((resolve, reject) =>
         {
             uploadInput.onchange = () =>
             {
                 const file = uploadInput.files[0];
                 file.text().then((text) =>
                 {
-                    const object = Game.SaveManager.deserialize(text);
+                    const object = Game.deserializeSaveState(text);
                     resolve(object);
                 });
             };

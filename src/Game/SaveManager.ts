@@ -1,98 +1,128 @@
+/// <reference path="../Interop/Bridge.ts" />
+
 namespace Game
 {
-    export type Savegame =
+    export type SaveState =
         {
             id: string; // GUID for Save
             version: string; // Game Version
             date: Date;
             playTime: Time;
+            name: string;
 
             data: GameData;
         };
 
-    export class SaveManager
+    export interface SaveManager
     {
-        public static get names(): Array<string>
-        {
-            return SaveStorage.names.sort();
-        }
+        get slots(): AsyncIterablePromise<number>;
+        get saveStates(): AsyncIterablePromise<[number, SaveState]>;
 
-        public static exists(name: string): boolean
-        {
-            return SaveStorage.names.includes(name);
-        }
-
-        public static get savegames(): [string, Savegame][]
-        {
-            const savegames: [string, Savegame][] = [];
-            for (const name of this.names)
-                savegames.push([name, this.load(name)]);
-            return savegames;
-        }
-
-        public static save(savegame: Savegame, name: string): string
-        {
-            const text = this.serialize(savegame);
-            SaveStorage.save(name, text);
-            return name;
-        }
-
-        public static load(name: string): Savegame
-        {
-            const text = SaveStorage.load(name);
-            if (!text) return null;
-            const savegame = this.deserialize(text);
-            return savegame;
-        }
-
-        public static delete(name: string)
-        {
-            SaveStorage.delete(name);
-        }
-
-        public static serialize(savegame: Savegame): string
-        {
-            return YAML.stringify(savegame);
-        }
-
-        public static deserialize(data: string): Savegame
-        {
-            return YAML.parse(data) as Savegame;
-        }
+        save(slot: number, saveState: SaveState): Promise<void>;
+        load(slot: number): Promise<SaveState>;
+        delete(slot: number): Promise<void>;
     }
 
-    export const SaveStorage = new class SaveStorage
+    export function serializeSaveState(saveState: SaveState): string
     {
-        private prefix = "SaveGame-";
+        return YAML.stringify(saveState);
+    }
 
-        public get names(): Array<string>
+    export function deserializeSaveState(data: string): SaveState
+    {
+        return YAML.parse(data) as SaveState;
+    }
+
+    export class WebSaveManager implements SaveManager
+    {
+        private prefix = "saveState-";
+
+        get slots(): AsyncIterablePromise<number>
         {
-            const ret: string[] = [];
+            return new AsyncIterablePromise<number>(this.getSlots());
+        }
+
+        private async * getSlots()
+        {
             for (let i = 0; i < localStorage.length; ++i)
             {
                 const key = localStorage.key(i);
                 if (key.startsWith(this.prefix))
                 {
-                    const name = key.splitFirst("-")[1];
-                    ret.push(name);
+                    const slot = parseInt(key.splitFirst("-")[1]);
+                    if (!isNaN(slot)) yield slot;
                 }
             }
-            return ret;
         }
 
-        public load(name: string): string
+        get saveStates(): AsyncIterablePromise<[number, SaveState]>
         {
-            return localStorage.getItem(this.prefix + name);
+            return new AsyncIterablePromise<[number, SaveState]>(this.getSaveStates());
         }
 
-        public save(name: string, data: string)
+        private async * getSaveStates(): AsyncIterable<[number, SaveState]>
         {
-            return localStorage.setItem(this.prefix + name, data);
+            for await (const slot of this.slots)
+                yield [slot, await this.load(slot)];
         }
 
-        public delete(name: string)
+        async save(slot: number, saveState: SaveState)
         {
-            localStorage.delete(this.prefix + name);
+            const text = serializeSaveState(saveState);
+            localStorage.setItem(this.prefix + slot, text);
         }
-    }();
+
+        async load(slot: number): Promise<SaveState>
+        {
+            const text = localStorage.getItem(this.prefix + slot);
+            return deserializeSaveState(text);
+        }
+
+        async delete(slot: number)
+        {
+            localStorage.delete(this.prefix + slot);
+        }
+    }
+
+    export class LocalSaveManager implements SaveManager
+    {
+        get slots(): AsyncIterablePromise<number>
+        {
+            return new AsyncIterablePromise<number>(this.getSlots());
+        }
+
+        private async * getSlots()
+        {
+            const fileNames = await Interop.Bridge.SaveGames();
+            return fileNames.map(f => parseInt(f)).filter(x => !isNaN(x));
+        }
+
+        get saveStates(): AsyncIterablePromise<[number, SaveState]>
+        {
+            return new AsyncIterablePromise<[number, SaveState]>(this.getSaveStates());
+        }
+
+        private async * getSaveStates(): AsyncIterable<[number, SaveState]>
+        {
+            for await (const slot of this.slots)
+                yield [slot, await this.load(slot)];
+        }
+
+        async save(slot: number, saveState: SaveState)
+        {
+            await Interop.Bridge.SaveGame(slot.toFixed(), serializeSaveState(saveState));
+        }
+
+        async load(slot: number): Promise<SaveState>
+        {
+            return deserializeSaveState(await Interop.Bridge.LoadGame(slot.toFixed()));
+        }
+
+        async delete(slot: number)
+        {
+            await Interop.Bridge.DeleteGame(slot.toFixed());
+        }
+    }
+
+    export const SaveManager: SaveManager = Interop.Bridge ? new LocalSaveManager() : new WebSaveManager();
 }
