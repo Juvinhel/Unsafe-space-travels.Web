@@ -93,7 +93,7 @@ namespace Game
 
         private async * getSlots()
         {
-            const fileNames = await Interop.Bridge.SaveGames();
+            const fileNames = await Interop.Bridge.SaveFiles();
             return fileNames.map(f => parseInt(f)).filter(x => !isNaN(x));
         }
 
@@ -110,17 +110,17 @@ namespace Game
 
         async save(slot: number, saveState: SaveState)
         {
-            await Interop.Bridge.SaveGame(slot.toFixed(), serializeSaveState(saveState));
+            await Interop.Bridge.SaveSaveFile(slot.toFixed(), serializeSaveState(saveState));
         }
 
         async load(slot: number): Promise<SaveState>
         {
-            return deserializeSaveState(await Interop.Bridge.LoadGame(slot.toFixed()));
+            return deserializeSaveState(await Interop.Bridge.LoadSaveFile(slot.toFixed()));
         }
 
         async delete(slot: number)
         {
-            await Interop.Bridge.DeleteGame(slot.toFixed());
+            await Interop.Bridge.DeleteSaveFile(slot.toFixed());
         }
     }
 
