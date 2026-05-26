@@ -1,0 +1,59 @@
+@size: 3rem;
+
+move-pad
+{
+    overflow: hidden;
+}
+
+#move-pad-root
+{
+    display: grid;
+    grid-template-rows: repeat(2, @size);
+    grid-template-columns: repeat(3, @size);
+    padding: 0.25em;
+    gap: 0.25rem;
+    user-select: none;
+
+    > button
+    {
+        border-radius: 1rem;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-origin: content-box;
+        background-color: rgb(59, 59, 59);
+
+        &:hover
+        {
+            background-color: var(--accent-color);
+        }
+    }
+
+    > #move-pad-up
+    {
+        grid-row: 1;
+        grid-column: 2;
+        background-image: url("img/icons/map/up-chevron.svg");
+    }
+
+    > #move-pad-down
+    {
+        grid-row: 2;
+        grid-column: 2;
+        background-image: url("img/icons/map/down-chevron.svg");
+    }
+
+    > #move-pad-left
+    {
+        grid-row: 2;
+        grid-column: 1;
+        background-image: url("img/icons/map/left-chevron.svg");
+    }
+
+    > #move-pad-right
+    {
+        grid-row: 2;
+        grid-column: 3;
+        background-image: url("img/icons/map/right-chevron.svg");
+    }
+}

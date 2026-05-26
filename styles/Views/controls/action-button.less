@@ -1,0 +1,157 @@
+action-button
+{
+    display: block;
+    --button-text-color: var(--inverted-foreground-color);
+    --button-background-color: var(--foreground-color);
+    --button-highlight-text-color: var(--foreground-color);
+    --button-highlight-background-color: var(--accent-color);
+    min-width: 6em;
+    border-radius: var(--corner-radius);
+    outline: none;
+    background-color: var(--foreground-color);
+    cursor: pointer;
+    user-select: none;
+
+    &.disabled
+    {
+        background-color: var(--disabled-color);
+        color: var(--foreground-color);
+        cursor: not-allowed;
+    }
+
+    &:hover:not(.disabled)
+    {
+        background-color: var(--accent-color);
+        color: var(--foreground-color);
+        cursor: pointer;
+    }
+
+    &:active, &[checked], &.checked
+    {
+        background: var(--accent-color);
+        color: var(--foreground-color);
+    }
+}
+
+action-button:host(.disabled)
+{
+    #action-button-root span
+    {
+
+        color: var(--foreground-color) !important;
+    }
+}
+
+action-button:host(:hover:not(.disabled))
+{
+    #action-button-root span
+    {
+        color: var(--foreground-color) !important;
+    }
+}
+
+action-button:host(:active),
+action-button:host([checked]),
+action-button:host(.checked)
+{
+    #action-button-root span
+    {
+        color: var(--foreground-color) !important;
+    }
+}
+
+#action-button-root
+{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: min-content 1fr 1.5em;
+    grid-template-areas:
+        "icon text action-cost"
+        "icon text energy-cost";
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    gap: 0.125em;
+    user-select: none;
+
+    > #action-button-icon
+    {
+        grid-area: icon;
+        aspect-ratio: 1;
+        height: 100%;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    > #action-button-text
+    {
+        grid-area: text;
+        color: var(--button-text-color);
+        font-weight: bold;
+        font-size: 1em;
+        text-align: start;
+    }
+
+    > *[id$="-cost-text"]
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-content: center;
+        font-size: 0.625em;
+
+        &::after
+        {
+            aspect-ratio: 1;
+            height: 100%;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            content: " ";
+        }
+
+        &:empty
+        {
+            display: none;
+        }
+    }
+
+    > #action-button-action-cost-text
+    {
+        grid-area: action-cost;
+        color: var(--action-color);
+
+        &::after
+        {
+            background-image: url("img/icons/battle/action.svg");
+        }
+    }
+
+    > #action-button-energy-cost-text
+    {
+        grid-area: energy-cost;
+        color: var(--energy-color);
+
+        &::after
+        {
+            background-image: url("img/icons/battle/energy.svg");
+        }
+    }
+
+    > #action-button-quantity-cost-text
+    {
+        grid-area: energy-cost;
+        color: var(--quantity-color);
+
+        &::after
+        {
+            background-image: url("img/icons/inventory/quantity.svg");
+        }
+    }
+
+    > span
+    {
+        white-space: nowrap;
+    }
+}

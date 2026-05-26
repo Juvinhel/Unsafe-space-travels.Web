@@ -1,0 +1,10 @@
+{
+    "out": "dist",
+    "map-path-prefix": "maps/",
+    "image-path-prefix": "img/maps/",
+    "inline-object-images": true,
+    "include": [
+        "maps"
+    ],
+    "exclude": []
+}

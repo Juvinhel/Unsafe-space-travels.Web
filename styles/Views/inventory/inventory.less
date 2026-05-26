@@ -1,0 +1,232 @@
+#inventory
+{
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas: "category" "content";
+    overflow: hidden;
+    gap: 0.25em;
+
+    > .category
+    {
+        grid-area: category;
+        width: 100%;
+    }
+
+    > div
+    {
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-template-columns: min-content min-content 1fr;
+        grid-template-areas: "details divider list";
+        grid-area: content;
+
+        > .details
+        {
+            grid-area: details;
+            width: 12em;
+            min-width: 8em;
+        }
+
+        > vertical-divider
+        {
+            grid-area: divider;
+        }
+
+        > .list
+        {
+            grid-area: list;
+        }
+    }
+}
+
+#inventory > .category
+{
+    > *
+    {
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-template-columns: max-content max-content;
+        align-items: center;
+        gap: 0.5em;
+
+        > img
+        {
+            aspect-ratio: 1;
+            width: 2em;
+        }
+    }
+}
+
+#inventory .list
+{
+    display: grid;
+    grid-template-rows: min-content minmax(6em, 1fr) min-content fit-content(6em);
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "backpack-items-title"
+        "backpack-items-list"
+        "equipped-items"
+        "equipped-items";
+    overflow-y: auto;
+    gap: 0.25em;
+
+    h3
+    {
+        justify-self: center;
+    }
+
+    > .backpack-items-title
+    {
+        z-index: 1;
+        position: sticky;
+        top: 0;
+        grid-area: backpack-items-title;
+        background-color: var(--background-color);
+    }
+
+    > .backpack-items-list
+    {
+        display: flex;
+        grid-area: backpack-items-list;
+        flex-wrap: wrap;
+        align-content: start;
+        justify-content: start;
+        gap: 0.25em;
+    }
+
+    > .equipped-items
+    {
+        display: grid;
+        z-index: 1;
+        position: sticky;
+        bottom: 0;
+        grid-template-rows: subgrid;
+        grid-template-areas:
+            "equipped-items-title"
+            "equipped-items-list";
+        grid-area: equipped-items;
+        gap: 0.25em;
+        background-color: var(--background-color);
+
+        > .equipped-skills-title
+        {
+            grid-area: equipped-items-title;
+        }
+
+        > .equipped-items-list
+        {
+            display: flex;
+            grid-area: equipped-items-list;
+            flex-wrap: wrap;
+            overflow-y: auto;
+            gap: 0.25em;
+
+            > .item-slot
+            {
+                width: 15em;
+                height: 2.5em;
+                border-radius: var(--corner-radius);
+                background-color: var(--dark-background-color);
+
+                > span
+                {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+
+                    &:not(:only-child)
+                    {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+
+    action-button
+    {
+        width: 10em;
+        height: 1.75em;
+        font-size: 1.5em;
+    }
+}
+
+#inventory .details
+{
+    display: grid;
+    grid-template-rows: max-content minmax(2em, auto) minmax(min-content, 1fr) min-content;
+    grid-template-columns: 1fr;
+    grid-auto-rows: min-content;
+    align-content: start;
+    justify-content: start;
+    overflow-y: auto;
+    gap: 0.25em;
+
+    > h1, h2, h3
+    {
+        justify-self: center;
+    }
+
+    > img
+    {
+        justify-self: center;
+        aspect-ratio: 1;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: var(--corner-radius);
+        background-color: var(--foreground-color);
+    }
+
+    > button
+    {
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+    }
+
+    > .unequip
+    {
+        --button-background-color: var(--cancel-color);
+        --button-text-color: var(--foreground-color);
+    }
+
+    > div
+    {
+        display: grid;
+        grid-template-columns: max-content minmax(min-content, 1fr);
+        grid-auto-rows: min-content;
+        column-gap: 0.5em;
+        row-gap: 0.25em;
+        align-content: start;
+        justify-content: start;
+
+        > p
+        {
+            grid-column: 1 / -1;
+            margin: 0;
+        }
+
+        > label
+        {
+            grid-column: 1;
+        }
+
+        > span
+        {
+            grid-column: 2;
+        }
+
+        img
+        {
+            aspect-ratio: 1;
+            height: 1em;
+        }
+
+        > .quantity-text
+        {
+            color: var(--quantity-color);
+        }
+    }
+}

@@ -1,0 +1,60 @@
+battle-view
+{
+    --battle-view-background: hsl(0, 0%, 10%);
+    background-color: var(--battle-view-background);
+    user-select: none; // prevent text selection
+}
+
+#battle-view-root
+{
+    display: grid;
+    grid-template-rows: min-content 1fr min-content;
+    grid-template-columns: minmax(12em, 20%) 1fr minmax(12em, 20%);
+    grid-template-areas:
+        ". title ."
+        "player flow enemy"
+        "actions actions actions";
+    width: calc(100% - 0.5em);
+    height: calc(100% - 0.5em);
+    padding: 0.25em;
+    gap: 1em;
+
+    > #battle-view-title
+    {
+        grid-area: title;
+        margin: 0.5em;
+        font-size: 1.5em;
+        text-align: center;
+
+        > #battle-view-turn-counter
+        {
+            color: var(--disabled-color);
+            font-size: 0.75em;
+        }
+    }
+
+    > #battle-view-player
+    {
+        grid-area: player;
+        align-self: start;
+        min-height: 12em;
+    }
+
+    > #battle-view-enemy
+    {
+        grid-area: enemy;
+        align-self: start;
+        min-height: 12em;
+    }
+
+    > #battle-view-flow
+    {
+        grid-area: flow;
+    }
+
+    > #battle-view-actions
+    {
+        grid-area: actions;
+        margin: 0 2em;
+    }
+}

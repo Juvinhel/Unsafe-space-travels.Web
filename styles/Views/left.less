@@ -1,0 +1,19 @@
+#left
+{
+    width: 12em;
+    height: calc(100% - 0.5em);
+    padding: 0.25em;
+    background: var(--dark-background-color);
+
+    > #info
+    {
+        display: grid;
+        grid-template-rows: max-content max-content max-content 1fr;
+        grid-template-columns: 1fr;
+
+        > #body-display
+        {
+            grid-row: -1;
+        }
+    }
+}

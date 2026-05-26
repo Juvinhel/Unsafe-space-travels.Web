@@ -1,0 +1,2 @@
+- [ ] Find a Console for communication
+- [ ] Learn enough alien language to send a message

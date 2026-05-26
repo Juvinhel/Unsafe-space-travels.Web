@@ -1,0 +1,11 @@
+{
+    "out": "dist/app.css",
+    "include-css": true,
+    "include": [
+        "node_modules/@peach/ui/styles",
+        "node_modules/@peach/ui.components/styles",
+        "node_modules/@durian/markdown/styles",
+        "styles"
+    ],
+    "exclude": []
+}

@@ -1,0 +1,30 @@
+#right
+{
+    display: grid;
+    grid-template-rows: max-content 1fr max-content max-content;
+    grid-template-columns: 1fr;
+    grid-template-areas: "title" "." "move-pad" "map-view";
+    width: 12em;
+    background: var(--dark-background-color);
+
+    > .title
+    {
+        grid-area: title;
+        padding: 0.5em 0.25em;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    > move-pad
+    {
+        grid-area: move-pad;
+        justify-self: center;
+    }
+
+    > map-view
+    {
+        grid-area: map-view;
+        aspect-ratio: 1;
+        width: 100%;
+    }
+}

@@ -1,0 +1,109 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+        {
+            "color": "#ffff69e6",
+            "drawFill": true,
+            "id": 17,
+            "members": [
+                {
+                    "name": "story",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Depiction",
+            "type": "class",
+            "useAs": [
+                "object",
+                "project"
+            ]
+        },
+        {
+            "id": 14,
+            "name": "Ground",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Default",
+                "Passable",
+                "Impassable"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 16,
+            "members": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Map",
+            "type": "class",
+            "useAs": [
+                "map",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 19,
+            "members": [
+                {
+                    "name": "blocking",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "hidden",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "story",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Object",
+            "type": "class",
+            "useAs": [
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 13,
+            "members": [
+                {
+                    "name": "ground",
+                    "propertyType": "Ground",
+                    "type": "string",
+                    "value": "Default"
+                }
+            ],
+            "name": "Tile",
+            "type": "class",
+            "useAs": [
+                "tile",
+                "project"
+            ]
+        }
+    ]
+}

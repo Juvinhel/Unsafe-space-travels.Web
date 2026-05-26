@@ -1,0 +1,56 @@
+{
+    "liveServer.settings.CustomBrowser": "chrome",
+    "liveServer.settings.host": "localhost",
+    "liveServer.settings.port": 5752,
+    "liveServer.settings.root": "/dist",
+    "files.associations": {
+        //tiled
+        "*.tsj": "json",
+        "*.tmj": "json",
+        "**/maps/**/*.tsx": "xml",
+        "*.tmx": "xml",
+        "*.tiled-project": "json",
+        "*.tiled-session": "json",
+    },
+    "openInExternalApp.openMapper": [
+        {
+            "extensionName": "tmx",
+            "apps": [
+                {
+                    "title": "Tiled Map",
+                    "openCommand": "tiled"
+                }
+            ],
+        },
+        {
+            "extensionName": "tsx",
+            "apps": [
+                {
+                    "title": "Tiled Tileset",
+                    "openCommand": "tiled"
+                }
+            ],
+        },
+        {
+            "extensionName": "tiled-project",
+            "apps": [
+                {
+                    "title": "Tiled Project",
+                    "openCommand": "tiled"
+                }
+            ],
+        }
+    ],
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "$(notebook-move-down) Build",
+            "task": "Build",
+            "tooltip": "Build"
+        },
+        {
+            "label": "$(notebook-move-down) Publish",
+            "task": "Publish",
+            "tooltip": "Publish"
+        },
+    ]
+}

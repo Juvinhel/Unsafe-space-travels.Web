@@ -1,0 +1,18 @@
+{
+  "name": "unsafe-space-travels",
+  "version": "0.1.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Juvinhel",
+  "license": "ISC",
+  "dependencies": {
+    "@peach/helper": "file:../Peach/Helper",
+    "@peach/ui": "file:../Peach/UI",
+    "@peach/ui.components": "file:../Peach/UI.Components",
+    "@durian/template": "file:../Durian/Template",
+    "@durian/markdown": "file:../Durian/Markdown"
+  }
+}

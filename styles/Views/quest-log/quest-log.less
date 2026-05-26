@@ -1,0 +1,36 @@
+#quest-log
+{
+    display: flex;
+    flex-flow: row;
+    overflow: hidden;
+
+    > .tree
+    {
+        width: 12em;
+        min-width: 8em;
+        max-width: 80%;
+        overflow: auto;
+    }
+
+    > .description
+    {
+        flex-grow: 1;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        > *
+        {
+            min-height: 100%;
+        }
+    }
+}
+
+#quest-log .completed
+{
+    text-decoration: line-through;
+}
+
+#quest-log article
+{
+    --article-background-color: transparent;
+}
