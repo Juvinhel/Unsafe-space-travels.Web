@@ -10,7 +10,5 @@ namespace Game
         maxEnergy: number;
         arousal: number;
         maxArousal: number;
-        knownSkills: string[];
-        equippedSkills: FixedLengthArray<string, 9>;
     }
 }

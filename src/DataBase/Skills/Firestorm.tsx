@@ -1,5 +1,6 @@
 namespace DataBase.Skills
 {
+    @known("Skills.Firestorm")
     export class Firestorm implements Game.Battle.Skill
     {
         public name = "Firestorm";

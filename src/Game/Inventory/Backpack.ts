@@ -3,19 +3,19 @@ namespace Game.Inventory
     export interface Backpack
     {
         money: number;
-        items: { [name: string]: number; };
+        items: Item[];
         quickSlots: FixedLengthArray<string, 3>;
     }
 
     export function isInQuickSlot(item: string | Item): boolean
     {
-        const itemName = typeof item === "string" ? item : DataBase.findQualifiedName(item);
+        const itemName = typeof item === "string" ? item : DataBase.getType(item);
         return Game.data.player.backpack.quickSlots.includes(itemName);
     }
 
     export function equipItem(item: string | Item): boolean
     {
-        const itemName = typeof item === "string" ? item : DataBase.findQualifiedName(item);
+        const itemName = typeof item === "string" ? item : DataBase.getType(item);
         if (isInQuickSlot(itemName)) return false;
 
         for (let i = 0; i < Game.data.player.backpack.quickSlots.length; ++i)
@@ -29,7 +29,7 @@ namespace Game.Inventory
 
     export function unequipItem(item: string | Item): boolean
     {
-        const itemName = typeof item === "string" ? item : DataBase.findQualifiedName(item);
+        const itemName = typeof item === "string" ? item : DataBase.getType(item);
         for (let i = 0; i < Game.data.player.backpack.quickSlots.length; ++i)
             if (Game.data.player.backpack.quickSlots[i] == itemName)
             {
@@ -41,20 +41,45 @@ namespace Game.Inventory
 
     export const backpackManager = new class BackpackManager
     {
-        public add(item: string, quantity: number = 1)
+        public add(item: string | Item, quantity?: number)
         {
-            let count = Game.data.player.backpack.items[item];
-            if (!count) count = 0;
-            count += quantity;
-            if (count <= 0)
-                delete Game.data.player.backpack[item];
+            item = typeof item === "string" ? DataBase.create(item) as Item : item;
+
+            if ("quantity" in item)
+            {
+                if (quantity != null) item.quantity = quantity;
+
+                const inventoryItem = Game.data.player.backpack.items.first(x => x.constructor == item.constructor);
+                if (!inventoryItem)
+                    Game.data.player.backpack.items.push(item);
+                else
+                    inventoryItem.quantity += item.quantity;
+            }
             else
-                Game.data.player.backpack[item] = count;
+            {
+                //singleton
+                if (quantity != null) throw new Error("Item is a singleton");
+                Game.data.player.backpack.items.push(item);
+            }
         }
 
-        public remove(item: string, quantity: number = 1)
+        public remove(item: string | Item, quantity: number = null): boolean
         {
-            this.add(item, -quantity);
+            item = typeof item === "string" ? DataBase.create(item) as Item : item;
+            if ("quantity" in item)
+            {
+                const inventoryItem = Game.data.player.backpack.items.first(x => x.constructor == item.constructor);
+                if (!inventoryItem) return false;
+                if (inventoryItem.quantity < quantity) return false;
+                inventoryItem.quantity -= quantity;
+                return true;
+            }
+            else
+            {
+                //singleton
+                if (quantity != null) throw new Error("Item is a singleton");
+                Game.data.player.backpack.items.removeIf(x => x == item);
+            }
         }
     }();
 }

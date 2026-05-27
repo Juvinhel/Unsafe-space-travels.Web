@@ -1,14 +1,15 @@
 namespace DataBase.Items.Consumables
 {
+    @known("Items.Consumables.ChocolateBar")
     export class ChocolateBar implements Game.Inventory.Consumable
     {
-        public name = "Chocolate bar";
-        public icon = "/img/icons/inventory/items/consumables/chocolate-bar.svg";
-        public description = "A tasty chocolate bar. Restores 20 HP.";
-        public category = "consumable" as const;
+        public get name() { return "Chocolate bar"; }
+        public get icon() { return "/img/icons/inventory/items/consumables/chocolate-bar.svg"; }
+        public get description() { return "A tasty chocolate bar. Restores 20 HP."; }
+        public get category(): "consumable" { return "consumable"; };
 
-        public actionCost = 1;
-        public target = "self" as const;
+        public get actionCost() { return 1; }
+        public get target(): Game.Battle.ActionTarget { return "self"; }
 
         public activationText(state: Game.Battle.State): Node
         {

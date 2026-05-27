@@ -35,9 +35,9 @@ namespace Game
             backpack:
             {
                 money: 0,
-                items: {
-                    "Items.Consumables.ChocolateBar": Number.POSITIVE_INFINITY
-                },
+                items: [
+                    new DataBase.Items.Consumables.ChocolateBar(),
+                ],
                 quickSlots: Array.createFixed(3, "Items.Consumables.ChocolateBar"),
             },
             stats: {
@@ -49,8 +49,19 @@ namespace Game
                 maxEnergy: 100,
                 arousal: 0,
                 maxArousal: 100,
-                knownSkills: ["Skills.Punch", "Skills.Kick", "Skills.CalmDown", "Skills.ImpactFist", "Skills.Escape", "Skills.Firestorm", "Skills.HighKick"],
-                equippedSkills: Array.createFixed(9, "Skills.Punch", "Skills.Kick", "Skills.HighKick", "Skills.ImpactFist", "Skills.Escape", "Skills.CalmDown"),
+            },
+
+            expertise: {
+                skills: [
+                    new DataBase.Skills.Punch(),
+                    new DataBase.Skills.Kick(),
+                    new DataBase.Skills.CalmDown(),
+                    new DataBase.Skills.ImpactFist(),
+                    new DataBase.Skills.Escape(),
+                    new DataBase.Skills.Firestorm(),
+                    new DataBase.Skills.HighKick()
+                ],
+                quickslots: Array.createFixed(9, "Skills.Punch", "Skills.Kick", "Skills.HighKick", "Skills.ImpactFist", "Skills.Escape", "Skills.CalmDown"),
             }
         }
     };

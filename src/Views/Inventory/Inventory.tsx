@@ -31,15 +31,12 @@ namespace Views.Inventory
         const category = Game.Inventory.ItemCategory[e.newIndex];
 
         list.clearChildren();
-        list.append(...(Object.entries(Game.data.player.backpack.items)
-            .mapAndFilter(([name, quantity]) =>
+        list.append(...Game.data.player.backpack.items
+            .mapAndFilter(item =>
             {
-                if (quantity <= 0) return;
-                const item = DataBase.find(name);
-                item.quantity = quantity;
                 if (category && item.category != category) return;
-                return <action-button itemName={ DataBase.findQualifiedName(item) } item={ item } text={ item.name } icon={ item.icon } actionCost={ item.actionCost ?? 0 } quantityCost={ item.quantity } onclick={ () => showDetails(item) } />;
-            })));
+                return <action-button item={ item } text={ item.name } icon={ item.icon } actionCost={ item["actionCost"] ?? 0 } quantityCost={ item.quantity } onclick={ () => showDetails(item) } />;
+            }));
 
         refreshEquippedItems();
         refreshSelectedItems();
@@ -50,15 +47,6 @@ namespace Views.Inventory
     {
         currentItem = item as Game.Inventory.Consumable;
         refreshDetails();
-    }
-
-    function refreshSelectedItems()
-    {
-        const inventory = document.querySelector("#inventory");
-        if (!inventory) return;
-        const currentItemName = DataBase.findQualifiedName(currentItem);
-        for (const actionButton of inventory.querySelectorAll("action-button"))
-            actionButton.classList.toggle("checked", actionButton.getAttribute("itemName") == currentItemName);
     }
 
     function refreshDetails()
@@ -92,6 +80,14 @@ namespace Views.Inventory
         );
     }
 
+    function refreshSelectedItems()
+    {
+        const inventory = document.querySelector("#inventory");
+        if (!inventory) return;
+        for (const actionButton of inventory.querySelectorAll("action-button"))
+            actionButton.classList.toggle("checked", actionButton["item"] == currentItem);
+    }
+
     function equipItem(item: Game.Inventory.Item)
     {
         Game.Inventory.equipItem(item);
@@ -116,11 +112,12 @@ namespace Views.Inventory
             const slot = list.querySelector("#item-slot-" + i);
             while (slot.children.length > 1) slot.lastChild.remove();
 
-            const itemName = Game.data.player.backpack.quickSlots[i];
-            if (!itemName) continue;
-            const item = DataBase.find(itemName);
-            item.quantity = Game.data.player.backpack.items[itemName];
-            slot.appendChild(<action-button itemName={ DataBase.findQualifiedName(item) } item={ item } text={ item.name } icon={ item.icon } actionCost={ item.actionCost ?? 0 } quantityCost={ item.quantity } onclick={ () => showDetails(item) } />);
+            const itemType = Game.data.player.backpack.quickSlots[i];
+            if (!itemType) continue;
+            const item = Game.data.player.backpack.items.first(x => DataBase.getType(x) == itemType);
+            if (!item) continue;
+
+            slot.appendChild(<action-button item={ item } text={ item.name } icon={ item.icon } actionCost={ item["actionCost"] ?? 0 } quantityCost={ item.quantity } onclick={ () => showDetails(item) } />);
         }
     }
 }

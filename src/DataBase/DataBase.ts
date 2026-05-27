@@ -1,45 +1,53 @@
 namespace DataBase
 {
-    export function find(qualifiedName: string): any
-    {
-        if (!qualifiedName) return undefined;
-        const objectClass = Object.getByPath(DataBase, qualifiedName);
-        if (!objectClass) throw new DataBaseError("Not found!", qualifiedName);
-        return new objectClass();
-    }
+    export type ConstructorFunction = new (...args: any[]) => any;
+    export const knownTypes: { [type: string]: any; } = {};
 
-    export function findQualifiedName(object: any): string
+    export function known(type: string)
     {
-        if (!object) return undefined;
-        const constructor = object.constructor;
-        if (!constructor) throw new DataBaseError("Not found!", object);
-        const ret = constructor["qualifiedName"];
-        if (!ret) throw new DataBaseError("Not found!", object);
-        return ret;
-    }
-
-    export function init()
-    {
-        const basePrototype = Object.getPrototypeOf({});
-        for (const [name, value] of Object.entries(DataBase))
+        return function (constructor: ConstructorFunction)
         {
-            const qualifiedName = name;
-            if (Object.getPrototypeOf(value) == basePrototype) // namespace
-                setQualifiedNames(qualifiedName, value);
-        }
+            constructor.prototype["@type"] = type;
+            knownTypes[type] = constructor.prototype;
+        };
     }
 
-    function setQualifiedNames(parentName: string, namespace: any)
+    export function create(type: string, ...params: any[]): any
     {
-        const basePrototype = Object.getPrototypeOf({});
-        for (const [name, value] of Object.entries(namespace))
-        {
-            const qualifiedName = (parentName ? parentName + "." : "") + name;
-            if (Object.getPrototypeOf(value) == basePrototype) // namespace
-                setQualifiedNames(qualifiedName, value);
-            else if (typeof value == "function" && value.toString().startsWith("class"))
-                value["qualifiedName"] = qualifiedName;
-        }
+        if (!type) return undefined;
+        const constructor = getConstructor(type);
+        return new constructor(...params);
+    }
+
+    export function getConstructor(type: string): ConstructorFunction
+    {
+        const prototype = knownTypes[type];
+        if (!prototype) throw new DataBaseError("Cannot find type: '" + type + "'!", type);
+        return prototype.constructor;
+    }
+
+    export function getPrototype(type: string): Object
+    {
+        const prototype = knownTypes[type];
+        if (!prototype) throw new DataBaseError("Cannot find type: '" + type + "'!", type);
+        return prototype;
+    }
+
+    export function getType(obj: any): string
+    {
+        const type = tryGetType(obj);
+        if (!type) throw new DataBaseError("Cannot find type: '" + obj.constructor.name + "'!", obj);
+        return type;
+    }
+
+    export function tryGetType(obj: any): string
+    {
+        if (obj == null) return undefined;
+        let prototype = typeof obj === "function" ? obj.prototype : Object.getPrototypeOf(obj);
+        if (!prototype) return undefined;
+        const type = prototype["@type"];
+        if (!type) return undefined;
+        return type;
     }
 
     export class DataBaseError extends Error

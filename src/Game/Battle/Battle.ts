@@ -13,16 +13,16 @@ namespace Game.Battle
     {
         return {
             name: Game.data.player.name,
-            skills: Game.data.player.stats.equippedSkills.mapAndFilter(name =>
+            skills: Game.data.player.expertise.quickslots.mapAndFilter(name =>
             {
-                const skill = DataBase.find(name) as Game.Battle.Skill;
+                const skill = Game.data.player.expertise.skills.first(x => DataBase.getType(x) == name);
                 if (!skill) return undefined;
                 skill.cooldown ??= 0;
                 return skill;
             }),
             items: Game.data.player.backpack.quickSlots.mapAndFilter(itemName =>
             {
-                const item = DataBase.find(itemName) as Game.Inventory.Consumable;
+                const item = DataBase.create(itemName) as Game.Inventory.Consumable;
                 if (!item) return undefined;
                 item.cooldown ??= 0;
                 item.quantity = Game.data.player.backpack.items[itemName];
@@ -52,7 +52,7 @@ namespace Game.Battle
             name: enemy.name,
             skills: enemy.knownSkills.mapAndFilter(name =>
             {
-                const skill = DataBase.find(name) as Game.Battle.Skill;
+                const skill = DataBase.create(name) as Game.Battle.Skill;
                 if (!skill) return undefined;
                 skill.cooldown ??= 0;
                 return skill;

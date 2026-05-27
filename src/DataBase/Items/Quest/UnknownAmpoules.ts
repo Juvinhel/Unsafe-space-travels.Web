@@ -1,5 +1,6 @@
 namespace DataBase.Items.Quest
 {
+    @known("Items.Quest.UnknownAmpoules")
     export class UnknownAmpoules implements Game.Inventory.Item
     {
         public icon = "img/icons/inventory/items/quest/unknown-ampoules.svg";

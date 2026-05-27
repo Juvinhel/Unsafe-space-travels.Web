@@ -65,7 +65,6 @@ class InputManager
         {
             if (a === b) return 0;
             const comp = a.compareDocumentPosition(b);
-            console.log(a, b, comp.toString(2));
             if (comp & 2)
                 // b comes before a
                 return -1;

@@ -5,6 +5,7 @@ namespace Game
         name: string;
         body: Body;
         backpack: Inventory.Backpack;
+        expertise: Expertise;
         stats: Stats;
     };
 }

@@ -31,12 +31,11 @@ namespace Views.Skills
         const category = e.newIndex == 0 ? null : Game.Battle.SkillCategory[e.newIndex - 1];
 
         list.clearChildren();
-        list.append(...(Game.data.player.stats.knownSkills
-            .mapAndFilter(name =>
+        list.append(...(Game.data.player.expertise.skills
+            .mapAndFilter(skill =>
             {
-                const skill = DataBase.find(name);
                 if (category && skill.category != category) return;
-                return <action-button skillName={ DataBase.findQualifiedName(skill) } skill={ skill } text={ skill.name } icon={ skill.icon } actionCost={ skill.actionCost ?? 0 } energyCost={ skill.energyCost ?? 0 } onclick={ () => showDetails(skill) } />;
+                return <action-button skill={ skill } text={ skill.name } icon={ skill.icon } actionCost={ skill.actionCost ?? 0 } energyCost={ skill.energyCost ?? 0 } onclick={ () => showDetails(skill) } />;
             })));
 
         refreshEquippedSkills();
@@ -54,9 +53,8 @@ namespace Views.Skills
     {
         const skills = document.querySelector("#skills");
         if (!skills) return;
-        const currentSkillName = DataBase.findQualifiedName(currentSkill);
         for (const actionButton of skills.querySelectorAll("action-button"))
-            actionButton.classList.toggle("checked", actionButton.getAttribute("skillName") == currentSkillName);
+            actionButton.classList.toggle("checked", actionButton["skill"] == currentSkill);
     }
 
     function refreshDetails()
@@ -108,15 +106,17 @@ namespace Views.Skills
         const skills = document.querySelector("#skills");
         const list = skills.querySelector(".equipped-skills-list");
 
-        for (let i = 0; i < Game.data.player.stats.equippedSkills.length; ++i)
+        for (let i = 0; i < Game.data.player.expertise.quickslots.length; ++i)
         {
             const slot = list.querySelector("#skill-slot-" + i);
             while (slot.children.length > 1) slot.lastChild.remove();
 
-            const skillName = Game.data.player.stats.equippedSkills[i];
-            if (!skillName) continue;
-            const skill = DataBase.find(skillName);
-            slot.appendChild(<action-button skillName={ DataBase.findQualifiedName(skill) } skill={ skill } text={ skill.name } icon={ skill.icon } actionCost={ skill.actionCost ?? 0 } energyCost={ skill.energyCost ?? 0 } onclick={ () => showDetails(skill) } />);
+            const skillType = Game.data.player.expertise.quickslots[i];
+            if (!skillType) continue;
+            const skill = Game.data.player.expertise.skills.first(x => DataBase.getType(x) == skillType);
+            if (!skill) continue;
+
+            slot.appendChild(<action-button skill={ skill } text={ skill.name } icon={ skill.icon } actionCost={ skill.actionCost ?? 0 } energyCost={ skill.energyCost ?? 0 } onclick={ () => showDetails(skill) } />);
         }
     }
 }

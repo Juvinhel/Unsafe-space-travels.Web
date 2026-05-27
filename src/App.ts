@@ -17,8 +17,6 @@ const App = new (class App
         this.story = new RessourceDictionary("story", ["md"]);
         await this.story.initialize();
 
-        DataBase.init();
-
         this.InputManager = new InputManager();
         this.KeyboardManager = new KeyboardManager();
         this.KeyboardManager.InputManager = this.InputManager;

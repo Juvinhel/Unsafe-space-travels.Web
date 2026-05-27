@@ -27,7 +27,6 @@ namespace Views
                 globalInput.registerEvent(e.currentTarget as Element,
                     (e: GlobalInputEvent) =>
                     {
-                        console.log(e);
                         if (e.input == "Back") UI.Dialog.close(e.currentTarget as Element);
                         e.preventDefault();
                     });
