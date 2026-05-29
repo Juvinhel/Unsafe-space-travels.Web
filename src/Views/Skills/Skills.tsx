@@ -113,7 +113,7 @@ namespace Views.Skills
 
             const skillType = Game.data.player.expertise.quickslots[i];
             if (!skillType) continue;
-            const skill = Game.data.player.expertise.skills.first(x => DataBase.getType(x) == skillType);
+            const skill = Game.data.player.expertise.skills.first(x => Game.Data.getType(x) == skillType);
             if (!skill) continue;
 
             slot.appendChild(<action-button skill={ skill } text={ skill.name } icon={ skill.icon } actionCost={ skill.actionCost ?? 0 } energyCost={ skill.energyCost ?? 0 } onclick={ () => showDetails(skill) } />);

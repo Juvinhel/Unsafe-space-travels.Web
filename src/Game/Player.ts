@@ -1,9 +1,7 @@
 namespace Game
 {
-    export interface Player
+    export type Player = Character &
     {
-        name: string;
-        body: Body;
         backpack: Inventory.Backpack;
         expertise: Expertise;
         stats: Stats;

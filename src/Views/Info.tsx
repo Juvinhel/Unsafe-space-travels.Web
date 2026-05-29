@@ -28,11 +28,11 @@ namespace Views
 
         info.style.display = Game.data.bodyScanner ? "initial" : "none";
 
-        const mutationsCount = info.querySelector("#mutations-count");
-        mutationsCount.textContent = Game.data.player.body.mutations.length.toString();
+        //const mutationsCount = info.querySelector("#mutations-count");
+        //mutationsCount.textContent = Game.data.player.body.mutations.length.toString();
 
-        const augmentationsCount = info.querySelector("#augmentations-count");
-        augmentationsCount.textContent = Game.data.player.body.augmentations.length.toString();
+        //const augmentationsCount = info.querySelector("#augmentations-count");
+        //augmentationsCount.textContent = Game.data.player.body.augmentations.length.toString();
 
         if (!App.ImageSelector) return;
         const image = await App.ImageSelector.request("this should be a useful prompt");

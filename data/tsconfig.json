@@ -8,20 +8,15 @@
         "jsxFactory": "UI.Generator.Hyperscript",
         "jsxFragmentFactory": "UI.Generator.Fragment",
         "target": "esnext",
-        "outFile": "dist/app.js",
+        "outDir": "../dist/data/",
         "allowJs": true,
         "strict": false,
         "experimentalDecorators": true,
-        "declaration": true
     },
     "include": [
-        "node_modules/@peach/helper/src/**/*",
-        "node_modules/@peach/ui/src/**/*",
-        "node_modules/@peach/ui.components/src/**/*",
-        "node_modules/@durian/markdown/src/**/*",
-        "node_modules/@durian/template/src/**/*",
-        "modules/**/*.d.ts",
-        "src/**/*",
+        "../dist/app.d.ts",
+        "../node_modules/@durian/markdown/src/modules/marked/marked.d.ts",
+        "**/*",
     ],
-    "exclude": [],
+    "exclude": []
 }

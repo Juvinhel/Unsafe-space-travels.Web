@@ -16,6 +16,22 @@ const App = new (class App
         await this.maps.initialize();
         this.story = new RessourceDictionary("story", ["md"]);
         await this.story.initialize();
+        this.data = new RessourceDictionary("data", ["json", "js"]);
+        await this.data.initialize();
+
+        for (const file in this.data.files)
+        {
+            const [fileName, extension] = file.trimChar("/").split("/").last().splitLast(".");
+            const text = await (await fetch("data/" + file)).text();
+            switch (extension?.toLowerCase())
+            {
+                case "js": eval(text); break;
+                case "json":
+                    Game.Data.knownObjects[fileName] = Game.Data.deserialize(text, "JSON");
+                    console.log(Game.Data.knownObjects);
+                    break;
+            }
+        }
 
         this.InputManager = new InputManager();
         this.KeyboardManager = new KeyboardManager();
@@ -38,4 +54,5 @@ const App = new (class App
     public img: RessourceDictionary;
     public maps: RessourceDictionary;
     public story: RessourceDictionary;
+    public data: RessourceDictionary;
 })();

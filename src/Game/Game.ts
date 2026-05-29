@@ -10,7 +10,7 @@ namespace Game
         Game.sessionStart = new Date();
         Game.playTime = 0;
 
-        Game.data = deserialize(serialize(Game.defaultData));
+        Game.data = Data.clone(Game.defaultData);
 
         Game.storyManager.show("Game");
     }

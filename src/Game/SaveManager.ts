@@ -23,32 +23,6 @@ namespace Game
         delete(slot: number): Promise<void>;
     }
 
-    export function serialize(obj: any): string
-    {
-        return YAML.stringify(obj, function (key, value)
-        {
-            if (typeof value === "object" && value != null)
-            {
-                const type = DataBase.tryGetType(value);
-                if (type) return { "@type": type, ...value };
-            }
-            return value;
-        });
-    }
-
-    export function deserialize(data: string): any
-    {
-        return YAML.parse(data, function (key, value)
-        {
-            if (key == "@type")
-            {
-                const prototype = DataBase.getPrototype(value as string);
-                Object.setPrototypeOf(this, prototype);
-            }
-            return value;
-        });
-    }
-
     export class WebSaveManager implements SaveManager
     {
         private prefix = "saveState-";
@@ -84,14 +58,14 @@ namespace Game
 
         async save(slot: number, saveState: SaveState)
         {
-            const text = serialize(saveState);
+            const text = Data.serialize(saveState);
             localStorage.setItem(this.prefix + slot, text);
         }
 
         async load(slot: number): Promise<SaveState>
         {
             const text = localStorage.getItem(this.prefix + slot);
-            return deserialize(text);
+            return Data.deserialize(text);
         }
 
         async delete(slot: number)
@@ -130,12 +104,12 @@ namespace Game
 
         async save(slot: number, saveState: SaveState)
         {
-            await Interop.Bridge.SaveSaveFile(slot.toFixed(), serialize(saveState));
+            await Interop.Bridge.SaveSaveFile(slot.toFixed(), Data.serialize(saveState));
         }
 
         async load(slot: number): Promise<SaveState>
         {
-            return deserialize(await Interop.Bridge.LoadSaveFile(slot.toFixed()));
+            return Data.deserialize(await Interop.Bridge.LoadSaveFile(slot.toFixed()));
         }
 
         async delete(slot: number)

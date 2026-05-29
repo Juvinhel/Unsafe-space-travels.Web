@@ -11,6 +11,7 @@ namespace Game
         quests: Quest[],
         maps: { [link: string]: { objects: Game.World.Obj[]; }; };
         story: { [link: string]: object; };
+        characters: { [name: string]: Character; };
 
         player: Player;
     }
@@ -26,19 +27,19 @@ namespace Game
         quests: [],
         maps: {},
         story: {},
+        characters: {},
         player: {
             name: "Player",
             body: {
-                mutations: [],
-                augmentations: []
+                feminity: -100,
+                //mutations: [],
+                //augmentations: []
             },
             backpack:
             {
                 money: 0,
-                items: [
-                    new DataBase.Items.Consumables.ChocolateBar(),
-                ],
-                quickSlots: Array.createFixed(3, "Items.Consumables.ChocolateBar"),
+                items: [],
+                quickSlots: Array.createFixed(3),
             },
             stats: {
                 level: 1,
@@ -52,16 +53,8 @@ namespace Game
             },
 
             expertise: {
-                skills: [
-                    new DataBase.Skills.Punch(),
-                    new DataBase.Skills.Kick(),
-                    new DataBase.Skills.CalmDown(),
-                    new DataBase.Skills.ImpactFist(),
-                    new DataBase.Skills.Escape(),
-                    new DataBase.Skills.Firestorm(),
-                    new DataBase.Skills.HighKick()
-                ],
-                quickslots: Array.createFixed(9, "Skills.Punch", "Skills.Kick", "Skills.HighKick", "Skills.ImpactFist", "Skills.Escape", "Skills.CalmDown"),
+                skills: [],
+                quickslots: Array.createFixed(9),
             }
         }
     };

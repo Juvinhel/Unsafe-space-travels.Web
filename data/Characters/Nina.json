@@ -1,0 +1,11 @@
+{
+    "name": "Nina",
+    "body": {
+        "feminity": 75,
+        "eyes": {
+            "@type": "ProstheticEyes",
+            "color": "black",
+            "laserIndex": 9000
+        }
+    }
+}

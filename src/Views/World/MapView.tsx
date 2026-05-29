@@ -126,7 +126,7 @@ namespace Views.World
                 this.mapView = mapView;
             }
 
-            private mapView: MapView;
+            /* private */ mapView: MapView;
             public get position() { return this.mapView.playerPosition; }
             private set position(value) { this.mapView.playerPosition = value; }
 

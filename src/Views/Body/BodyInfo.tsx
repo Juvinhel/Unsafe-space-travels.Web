@@ -7,8 +7,8 @@ namespace Views.Body
             <vertical-divider />
             <div class="data">
                 <h1>Status: <span id="body-status">healthy</span></h1>
-                <h2>Mutations: <span id="mutations-count">{ Game.data.player.body.mutations.length }</span></h2>
-                <h2>Augmentations: <span id="augmentations-count">{ Game.data.player.body.augmentations.length }</span></h2>
+                <h2>Mutations: <span id="mutations-count">{ 0 }</span></h2>
+                <h2>Augmentations: <span id="augmentations-count">{ 0 }</span></h2>
             </div>
         </div>);
     }

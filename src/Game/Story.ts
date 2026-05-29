@@ -15,9 +15,9 @@ namespace Game
             this.templateEngine.getDefaultArgs = (link: string) => ({ link, data, World, questManager, backpackManager: Game.Inventory.backpackManager, });
         }
 
-        private templateCompiler = new Durian.Template.Compiler({ contain: "guid" });
-        private templateEngine = new Durian.Template.Engine();
-        private markdownRenderer = new Durian.Markdown.Renderer();
+        /* private */ templateCompiler = new Durian.Template.Compiler({ contain: "guid" });
+        /* private */ templateEngine = new Durian.Template.Engine();
+        /* private */ markdownRenderer = new Durian.Markdown.Renderer();
 
         public async get(url: string): Promise<Durian.Template.Template>
         {

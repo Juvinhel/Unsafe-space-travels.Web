@@ -107,6 +107,53 @@
             "hide": true,
         },
         {
+            "label": "Build Data",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Build typescript Data",
+                "Copy json Data",
+                "Delete tsconfig from Data"
+            ],
+        },
+        {
+            "label": "Build typescript Data",
+            "type": "typescript",
+            "tsconfig": "data/tsconfig.json",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+        },
+        {
+            "label": "Copy json Data",
+            "command": "Copy-Item",
+            "type": "shell",
+            "args": [
+                "-Path",
+                "data",
+                "-Filter",
+                "*.json",
+                "-Destination",
+                "dist",
+                "-Force",
+                "-Recurse",
+            ],
+            "hide": true,
+        },
+        {
+            "label": "Delete tsconfig from Data",
+            "command": "Remove-Item",
+            "type": "shell",
+            "args": [
+                "-Path",
+                "dist/data/tsconfig.json",
+            ],
+            "hide": true,
+        },
+        {
             "label": "Copy Fonts",
             "command": "Copy-Item",
             "type": "shell",
@@ -170,6 +217,7 @@
                 "Build Tiled",
                 "Copy Modules",
                 "Copy Index",
+                "Build Data",
                 "Copy Fonts",
                 "Copy Images",
                 "Copy Story",

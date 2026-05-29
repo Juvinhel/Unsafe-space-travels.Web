@@ -114,7 +114,7 @@ namespace Views.Inventory
 
             const itemType = Game.data.player.backpack.quickSlots[i];
             if (!itemType) continue;
-            const item = Game.data.player.backpack.items.first(x => DataBase.getType(x) == itemType);
+            const item = Game.data.player.backpack.items.first(x => Game.Data.getType(x) == itemType);
             if (!item) continue;
 
             slot.appendChild(<action-button item={ item } text={ item.name } icon={ item.icon } actionCost={ item["actionCost"] ?? 0 } quantityCost={ item.quantity } onclick={ () => showDetails(item) } />);

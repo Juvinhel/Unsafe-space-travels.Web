@@ -166,7 +166,7 @@ namespace Views
 
     function downloadObject(saveState: Game.SaveState, name: string)
     {
-        const dataStr = "data:text/yaml;charset=utf-8," + encodeURIComponent(Game.serialize(saveState));
+        const dataStr = "data:text/yaml;charset=utf-8," + encodeURIComponent(Game.Data.serialize(saveState));
         const downloadAnchorNode = document.createElement("a");
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", name + ".yaml");
@@ -191,7 +191,7 @@ namespace Views
                 const file = uploadInput.files[0];
                 file.text().then((text) =>
                 {
-                    const object = Game.deserialize(text);
+                    const object = Game.Data.deserialize(text);
                     resolve(object);
                 });
             };

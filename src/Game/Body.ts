@@ -1,8 +1,8 @@
 namespace Game
 {
-    export interface Body
-    {
-        mutations: any[];
-        augmentations: any[];
-    };
+    //export interface Body
+    //{
+    //    mutations: any[];
+    //    augmentations: any[];
+    //};
 }
