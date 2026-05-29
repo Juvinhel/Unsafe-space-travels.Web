@@ -7,12 +7,7 @@ namespace Game.World
         {
             internal_movementAllowed = value;
 
-            const right = document.getElementById("right");
-            const movePad = right.querySelector("move-pad") as Views.World.MovePad;
-            const mapView = right.querySelector("map-view") as Views.World.MapView;
-
-            if (movePad && mapView)
-                refreshMovePad(movePad, mapView);
+            Views.worldView.refreshMovePad();
         }
 
         return internal_movementAllowed;
@@ -60,42 +55,12 @@ namespace Game.World
     {
         const map = await get(link);
 
-        const right = document.getElementById("right");
-        right.clearChildren();
-
-        const title = document.createElement("h2");
-        title.textContent = map.name;
-        title.classList.add("title");
-
-        const mapView = new Views.World.MapView(map, { x: playerPosition.x, y: playerPosition.y });
-
-        const movePad = new Views.World.MovePad();
-        movePad.addEventListener(Views.World.MoveEventName, (e: CustomEvent<Direction>) => mapView.player.move(e.detail));
-
-        mapView.addEventListener(Views.World.RefreshMovementEventName, (e: CustomEvent<Point>) => refreshMovePad(movePad, mapView));
-
-        right.appendChild(title);
-        right.appendChild(mapView);
-        right.appendChild(movePad);
-        refreshMovePad(movePad, mapView);
-
-        //
-        Game.data.position = { map: link, x: playerPosition.x, y: playerPosition.y };
-    }
-
-    function refreshMovePad(movePad: Views.World.MovePad, mapView: Views.World.MapView)
-    {
-        movePad.canUp = mapView.player.canUp;
-        movePad.canDown = mapView.player.canDown;
-        movePad.canLeft = mapView.player.canLeft;
-        movePad.canRight = mapView.player.canRight;
+        Views.worldView.goto(map, playerPosition);
     }
 
     export function refreshObjects()
     {
-        const right = document.getElementById("right");
-        const mapView = right.querySelector("map-view") as Views.World.MapView;
-        if (mapView) mapView.refreshObjects();
+        Views.worldView.refreshObjects();
     }
 
     export function findObject(link: string, name: string): Obj

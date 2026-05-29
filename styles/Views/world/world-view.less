@@ -1,0 +1,35 @@
+world-view
+{
+    display: grid;
+    grid-template-rows: min-content min-content min-content;
+    grid-template-columns: 1fr;
+    gap: 0.5eM;
+
+    &:not(.loaded)
+    {
+        display: none;
+    }
+
+    > move-pad
+    {
+        grid-row: 1;
+        grid-column: 1;
+        justify-self: center;
+    }
+
+    > h2
+    {
+        grid-row: 2;
+        grid-column: 1;
+        font-size: 1.25em;
+        text-align: center;
+    }
+
+    > map-view
+    {
+        grid-row: 3;
+        grid-column: 1;
+        aspect-ratio: 1;
+        width: 100%;
+    }
+}

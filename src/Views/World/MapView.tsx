@@ -4,7 +4,7 @@ namespace Views.World
 
     export class MapView extends UI.Elements.CustomElement
     {
-        constructor (map: Game.World.Map, playerPosition: Game.World.Point)
+        constructor ()
         {
             super();
 
@@ -12,50 +12,59 @@ namespace Views.World
             this.addEventListener("keypress", this.preventKeyBoardScroll.bind(this), { capture: true, passive: false });
             this.addEventListener("keyup", this.preventKeyBoardScroll.bind(this), { capture: true, passive: false });
 
-            this.map = map;
-            this.helper = new Game.World.MapHelper(this.map);
-            this.playerPosition = playerPosition;
-            this.shadowRoot.appendChild(this.build());
-
-            this.root = this.shadowRoot.getElementById("map-view-root") as HTMLDivElement;
-            this.coordinatesSpan = this.root.querySelector("#map-view-coordinates");
-
             globalInput.registerEvent(this, this.globalInput.bind(this));
+
+            this.shadowRoot.appendChild(this.build());
         }
 
-        private root: HTMLDivElement;
         private coordinatesSpan: HTMLSpanElement;
+        private gridDiv: HTMLDivElement;
 
         private build()
         {
-            const style = {
-                "--tile-width": this.map.tilewidth + "px",
-                "--tile-height": this.map.tileheight + "px",
-                "--columns-count": this.map.width,
-                "--rows-count": this.map.height,
-            } as UI.Style;
-            return (<div id="map-view-root" style={ style }>
-                <span id="map-view-coordinates" />
-                <div id="map-view-grid">
-                    { this.buildTiles() }
-                    <div class="player" style={ { gridColumn: 1, gridRow: 1 } } />
-                    { this.buildObjects() }
-                </div>
+            return (<div id="map-view-root">
+                { this.coordinatesSpan = <span id="map-view-coordinates" /> as HTMLSpanElement }
+                { this.gridDiv = <div id="map-view-grid" /> as HTMLDivElement }
             </div>);
         }
 
-        public readonly map: Game.World.Map;
-        public readonly helper: Game.World.MapHelper;
+        public load(map: Game.World.Map, playerPosition: Game.World.Point)
+        {
+            this.map = map;
+            this.helper = new Game.World.MapHelper(this.map);
+            this.playerPosition = playerPosition;
+
+            this.gridDiv.style.setProperty("--tile-width", this.map.tilewidth + "px");
+            this.gridDiv.style.setProperty("--tile-height", this.map.tileheight + "px");
+            this.gridDiv.style.setProperty("--columns-count", this.map.width.toFixed());
+            this.gridDiv.style.setProperty("--rows-count", this.map.height.toFixed());
+
+            this.gridDiv.clearChildren();
+            this.gridDiv.append(...this.buildTiles());
+            this.gridDiv.append(<div class="player" style={ { gridColumn: 1, gridRow: 1 } } />);
+            this.gridDiv.append(...this.buildObjects());
+
+            this.player.teleport(this.playerPosition);
+
+            this.loaded = true;
+        }
+
+        public unload()
+        {
+            this.map = null;
+            this.helper = null;
+            this.playerPosition = null;
+            this.gridDiv.clearChildren();
+            this.loaded = false;
+        }
+
+        public loaded: boolean = false;
+        public map: Game.World.Map;
+        public helper: Game.World.MapHelper;
         public playerPosition: Game.World.Point;
 
         connectedCallback()
         {
-            this.player.teleport(this.playerPosition);
-            //! not optimal
-            delay(250).then(() =>
-            {
-                this.scrollToPosition(this.playerPosition);
-            });
         }
 
         private * buildTiles()
@@ -88,7 +97,7 @@ namespace Views.World
 
         public refreshObjects()
         {
-            for (const objectElement of this.root.querySelectorAll(".object") as NodeListOf<HTMLDivElement>)
+            for (const objectElement of this.gridDiv.querySelectorAll(".object") as NodeListOf<HTMLDivElement>)
             {
                 const object = objectElement["object"] as Game.World.Object;
                 objectElement.style.gridColumn = (object.x + 1).toString();
@@ -107,7 +116,7 @@ namespace Views.World
 
         private getTile(p: Game.World.Point)  
         {
-            return this.root.querySelector(".tile[x='" + p.x + "'][y='" + p.y + "']");
+            return this.gridDiv.querySelector(".tile[x='" + p.x + "'][y='" + p.y + "']");
         }
 
         public player = new class Player
@@ -147,7 +156,7 @@ namespace Views.World
                 this.position = p;
                 Game.data.position = { map: this.mapView.map.link, x: this.position.x, y: this.position.y };
 
-                const playerDiv = this.mapView.root.querySelector(".player") as HTMLDivElement;
+                const playerDiv = this.mapView.gridDiv.querySelector(".player") as HTMLDivElement;
                 playerDiv.style.gridColumn = (this.position.x + 1).toString();
                 playerDiv.style.gridRow = (this.position.y + 1).toString();
                 this.mapView.scrollToPosition(p);
@@ -198,6 +207,8 @@ namespace Views.World
 
         private globalInput(e: GlobalInputEvent)
         {
+            if (!this.loaded) return;
+
             switch (e.state)
             {
                 case "Down":
@@ -226,14 +237,14 @@ namespace Views.World
 
             for (const point of path)
             {
-                const tile = this.root.querySelector(".tile[x='" + point.x + "'][y='" + point.y + "']");
+                const tile = this.gridDiv.querySelector(".tile[x='" + point.x + "'][y='" + point.y + "']");
                 tile.classList.add("auto-move");
             }
         }
 
         private clearAutoMove()
         {
-            for (const tile of this.root.querySelectorAll(".tile"))
+            for (const tile of this.gridDiv.querySelectorAll(".tile"))
                 tile.classList.remove("auto-move");
         }
 
@@ -252,17 +263,17 @@ namespace Views.World
                 return;
             }
 
-            const currentTile = this.root.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + this.playerPosition.y + "']");
+            const currentTile = this.gridDiv.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + this.playerPosition.y + "']");
             if (!currentTile.classList.contains("auto-move"))
             {
                 this.stopAutoMove();
                 return;
             }
 
-            const upTile = this.root.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + (this.playerPosition.y - 1) + "']");
-            const downTile = this.root.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + (this.playerPosition.y + 1) + "']");
-            const leftTile = this.root.querySelector(".tile[x='" + (this.playerPosition.x - 1) + "'][y='" + this.playerPosition.y + "']");
-            const rightTile = this.root.querySelector(".tile[x='" + (this.playerPosition.x + 1) + "'][y='" + this.playerPosition.y + "']");
+            const upTile = this.gridDiv.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + (this.playerPosition.y - 1) + "']");
+            const downTile = this.gridDiv.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + (this.playerPosition.y + 1) + "']");
+            const leftTile = this.gridDiv.querySelector(".tile[x='" + (this.playerPosition.x - 1) + "'][y='" + this.playerPosition.y + "']");
+            const rightTile = this.gridDiv.querySelector(".tile[x='" + (this.playerPosition.x + 1) + "'][y='" + this.playerPosition.y + "']");
 
             const nextTile = [upTile, downTile, leftTile, rightTile].filter(t => t && t.classList.contains("auto-move")).first();
             if (!nextTile)

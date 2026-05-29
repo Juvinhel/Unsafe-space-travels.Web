@@ -22,6 +22,7 @@ const App = new (class App
         this.KeyboardManager.InputManager = this.InputManager;
 
         await UI.Navigator.navigate("left", Views.Info);
+        Views.loadRight();
 
         Game.start();
     }

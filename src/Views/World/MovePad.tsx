@@ -25,6 +25,8 @@ namespace Views.World
         private leftButton: HTMLButtonElement;
         private rightButton: HTMLButtonElement;
 
+        public active: boolean = false;
+
         private build()
         {
             return (<div id="move-pad-root">
@@ -49,6 +51,8 @@ namespace Views.World
 
         private up()
         {
+            if (!this.active) return;
+
             if (this.canUp)
             {
                 const event = new CustomEvent(MoveEventName, { detail: "Up" });
@@ -58,6 +62,8 @@ namespace Views.World
 
         private down()
         {
+            if (!this.active) return;
+
             if (this.canDown)
             {
                 const event = new CustomEvent(MoveEventName, { detail: "Down" });
@@ -67,6 +73,8 @@ namespace Views.World
 
         private left()
         {
+            if (!this.active) return;
+
             if (this.canLeft)
             {
                 const event = new CustomEvent(MoveEventName, { detail: "Left" });
@@ -76,6 +84,8 @@ namespace Views.World
 
         private right()
         {
+            if (!this.active) return;
+
             if (this.canRight)
             {
                 const event = new CustomEvent(MoveEventName, { detail: "Right" });
