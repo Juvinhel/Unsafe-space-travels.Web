@@ -1,14 +1,12 @@
 {
     "automappingRulesFile": "",
-    "commands": [
-    ],
+    "commands": [],
     "compatibilityVersion": 1100,
     "extensionsPath": "extensions",
     "folders": [
         "."
     ],
-    "properties": [
-    ],
+    "properties": [],
     "propertyTypes": [
         {
             "color": "#ffff69e6",

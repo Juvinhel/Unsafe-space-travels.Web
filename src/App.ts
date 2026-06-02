@@ -10,28 +10,9 @@ const App = new (class App
         this.buildDate = new Date(manifest["build-date"]);
         console.log("Running: " + this.name + " v" + this.version);
 
-        this.img = new RessourceDictionary("img", ["svg", "png"]);
-        await this.img.initialize();
-        this.maps = new RessourceDictionary("maps", ["map.json"]);
-        await this.maps.initialize();
-        this.story = new RessourceDictionary("story", ["md"]);
-        await this.story.initialize();
-        this.data = new RessourceDictionary("data", ["json", "js"]);
-        await this.data.initialize();
+        await Views.ShowSplash();
 
-        for (const file in this.data.files)
-        {
-            const [fileName, extension] = file.trimChar("/").split("/").last().splitLast(".");
-            const text = await (await fetch("data/" + file)).text();
-            switch (extension?.toLowerCase())
-            {
-                case "js": eval(text); break;
-                case "json":
-                    Game.Data.knownObjects[fileName] = Game.Data.deserialize(text, "JSON");
-                    console.log(Game.Data.knownObjects);
-                    break;
-            }
-        }
+        console.log("loaded");
 
         this.InputManager = new InputManager();
         this.KeyboardManager = new KeyboardManager();

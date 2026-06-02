@@ -8,7 +8,6 @@ namespace Game.World
 
         tilesets: Tileset[];
         ground: Ground[][];
-        layers: Layer[];
         objects: Obj[];
     };
 
@@ -20,11 +19,6 @@ namespace Game.World
     export type Obj = Rect & {
         name?: string;
         type?: string;
-    };
-
-    export type Layer = {
-        top: boolean;
-        cells: number[][];
     };
 
     export const GroundType = ["Default", "Passable", "Impassable"] as const;
