@@ -25,6 +25,6 @@
             "type": "image/x-icon"
         }
     ],
-    "version": "<%= pkg.version %>",
+    "version": "%version%",
     "build-date": "%build-date%"
 }

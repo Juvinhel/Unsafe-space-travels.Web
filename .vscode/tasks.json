@@ -196,14 +196,8 @@
             "hide": true,
         },
         {
-            "label": "Gen Version",
-            "command": "genversion dist/manifest.json -t manifest.json -f",
-            "type": "shell",
-            "hide": true,
-        },
-        {
-            "label": "Gen BuildDate",
-            "command": "(Get-Content dist/manifest.json).Replace('%build-date%', (Get-Date -Format \"o\")) | Set-Content dist/manifest.json",
+            "label": "Generate Version",
+            "command": "GenVersion -o dist/manifest.json -t manifest.json",
             "type": "shell",
             "hide": true,
         },
@@ -221,8 +215,7 @@
                 "Copy Fonts",
                 "Copy Images",
                 "Copy Story",
-                "Gen Version",
-                "Gen BuildDate",
+                "Generate Version",
             ],
             "group": {
                 "kind": "build",
