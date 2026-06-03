@@ -2,7 +2,6 @@ namespace Game
 {
     export interface GameData
     {
-        storyLink?: string;
         position?: Game.World.Point & { map: string; };
 
         smartphone: boolean;
@@ -19,7 +18,6 @@ namespace Game
     export let data: GameData;
 
     export let defaultData: GameData = {
-        storyLink: null,
         position: null,
         smartphone: false,
         backpack: false,

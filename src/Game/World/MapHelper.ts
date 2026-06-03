@@ -22,7 +22,7 @@ namespace Game.World
 
         public hasBlockingObject(p: Point)
         {
-            return this.map.objects.filter(o => isObject(o)).some(o => contains(o, p) && o.blocking);
+            return this.map.objects.filter(o => "blocking" in o).some(o => contains(o, p) && o.blocking);
         }
     };
 }

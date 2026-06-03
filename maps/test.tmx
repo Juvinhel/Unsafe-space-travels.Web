@@ -41,7 +41,7 @@
     </data>
   </layer>
   <objectgroup id="2" name="Objektebene 1">
-    <object id="1" type="Depiction" x="288" y="512" width="64" height="128">
+    <object id="1" type="Ambient" x="288" y="512" width="64" height="128">
       <properties>
         <property name="tale" value="/tales/PrisonFloor/Cell/Door.md"/>
       </properties>

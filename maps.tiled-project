@@ -1,12 +1,14 @@
 {
     "automappingRulesFile": "",
-    "commands": [],
+    "commands": [
+    ],
     "compatibilityVersion": 1100,
     "extensionsPath": "extensions",
     "folders": [
         "."
     ],
-    "properties": [],
+    "properties": [
+    ],
     "propertyTypes": [
         {
             "color": "#ffff69e6",
@@ -19,7 +21,7 @@
                     "value": ""
                 }
             ],
-            "name": "Depiction",
+            "name": "Ambient",
             "type": "class",
             "useAs": [
                 "object",
@@ -37,6 +39,35 @@
                 "Impassable"
             ],
             "valuesAsFlags": false
+        },
+        {
+            "color": "#ff242aa4",
+            "drawFill": true,
+            "id": 21,
+            "members": [
+                {
+                    "name": "blocking",
+                    "type": "bool",
+                    "value": true
+                },
+                {
+                    "name": "hidden",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "tale",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Interactive",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object",
+                "project"
+            ]
         },
         {
             "color": "#ffa0a0a4",

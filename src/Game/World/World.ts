@@ -41,6 +41,7 @@ namespace Game.World
     {
         const map = await get(link);
 
+        Views.Story.CloseStoryDialog();
         Views.worldView.goto(map, playerPosition);
     }
 

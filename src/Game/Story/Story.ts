@@ -21,6 +21,7 @@ namespace Game.Story
 
     async function get(url: string): Promise<Tale>
     {
+        console.log("get", url);
         let [link, hash] = url.splitFirst("#");
 
         hash = hash?.trimChar("/");
@@ -69,17 +70,24 @@ namespace Game.Story
             const href = a.getAttribute("href")?.trim();
             a.removeAttribute("href");
 
-            const url = href ? resolveLink(href, template.link) : null;
-            const func: AsyncFunction = onclick ? new AsyncFunction("event", "data", "world", "questManager", "backpackManager", onclick) : null;
-            a.onclick = async (e: Event) =>
+            if (href?.toLowerCase() == "close")
+            {   //TODO: better only in show?
+                a.onclick = () => Views.Story.CloseStoryDialog();
+            }
+            else
             {
-                if (func) if ((await func.call(result.context, e, data, World, questManager, Game.Inventory.backpackManager)) == false) return;
-                if (url)
+                const url = href ? resolveLink(href, template.link) : null;
+                const func: AsyncFunction = onclick ? new AsyncFunction("event", "data", "world", "questManager", "backpackManager", onclick) : null;
+                a.onclick = async (e: Event) =>
                 {
-                    if (inline) await showInline(e.currentTarget as HTMLAnchorElement, url);
-                    else await show(url);
-                }
-            };
+                    if (func) if ((await func.call(result.context, e, data, World, questManager, Game.Inventory.backpackManager)) == false) return;
+                    if (url)
+                    {
+                        if (inline) await showInline(e.currentTarget as HTMLAnchorElement, url);
+                        else await show(url);
+                    }
+                };
+            }
         }
 
         for (const element of article.querySelectorAll("*"))
@@ -125,27 +133,26 @@ namespace Game.Story
         if (typeof tale === "string") tale = await get(tale);
         const article = await render(tale, args, params);
 
-        const storyTitle = document.getElementById("story-title");
         const title = article.querySelector("title")?.innerText;
-        storyTitle.textContent = title ?? "";
-
-        const center = document.getElementById("center");
-        center.clearChildren();
-        center.append(article);
-        Game.data.storyLink = tale.link;
+        Views.Story.ShowStoryDialog(title, article);
     }
 
-    export async function clear(): Promise<void>
+    export async function showAmbient(...tales: (Tale | string)[])
     {
-        await Views.RefreshNav();
-        await Views.RefreshInfo();
+        for (let i = 0; i < tales.length; ++i)
+            if (typeof tales[i] === "string")
+                tales[i] = await get(tales[i] as string);
 
-        const storyTitle = document.getElementById("story-title");
-        storyTitle.textContent = "";
+        const articles: Element[] = [];
+        for (const tale of tales)
+        {
+            const article = await render(tale);
+            articles.push(article);
+        }
 
         const center = document.getElementById("center");
         center.clearChildren();
-        Game.data.storyLink = null;
+        center.append(...articles);
     }
 
     init();

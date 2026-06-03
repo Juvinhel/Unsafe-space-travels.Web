@@ -1,5 +1,3 @@
-{{> Cell.md }}
-
 # Cell Door #
 
 Now that the emergency unlock was triggered a number input lightens up.
@@ -25,17 +23,20 @@ Now that the emergency unlock was triggered a number input lightens up.
 const numberInput = document.getElementById("cell-number-input");
 if (numberInput.value == "4571")
 {
-    const door = world.findObject("maps/prison-floor", "cell-door");
+    const door = world.findObject("/maps/prison-floor.tmx", "cell-door");
     door.hidden = true;
     door.blocking = false;
     world.refreshObjects();
 
     numberInput.style.background = "green";
+
+    Game.Story.show("/tales/PrisonFloor/Cell/Escape.md");
+
     return false;
 }
 else 
 {
-    const door = world.findObject("maps/prison-floor", "cell-door");
+    const door = world.findObject("/maps/prison-floor.tmx", "cell-door");
     door.hidden = false;
     door.blocking = true;
     world.refreshObjects();

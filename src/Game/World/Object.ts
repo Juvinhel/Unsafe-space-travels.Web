@@ -1,15 +1,27 @@
 namespace Game.World
 {
-    export type Object = Obj & {
-        type: "Object";
-        img?: string;
-        blocking?: boolean;
-        hidden?: boolean;
-        tale?: string;
+    export function isAmbient(o: Obj): o is Ambient
+    {
+        return o.type == "Ambient";
+    }
+
+    export type Ambient = Obj &
+    {
+        type: "Ambient";
+        tale: string;
     };
 
-    export function isObject(o: Obj): o is Object
+    export function isInteractive(o: Obj): o is Interactive
     {
-        return o.type == "Object";
+        return o.type == "Interactive";
     }
+
+    export type Interactive = Obj &
+    {
+        type: "Interactive";
+        tale: string;
+        img: string;
+        hidden: boolean;
+        blocking: boolean;
+    };
 }

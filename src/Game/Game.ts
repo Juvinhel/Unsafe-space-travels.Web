@@ -12,7 +12,7 @@ namespace Game
 
         Game.data = Data.clone(Game.defaultData);
 
-        Game.Story.show("/tales/Game.md");
+        Game.Story.showAmbient("/tales/Game.md");
     }
 
     export function load(saveState: SaveState)
@@ -24,7 +24,6 @@ namespace Game
         Game.data = saveState.data;
         deepLoad(Game.data, Game.defaultData);
 
-        if (Game.data.storyLink) Game.Story.show(Game.data.storyLink);
         if (Game.data.position) Game.World.goto(Game.data.position.map, Game.data.position);
     }
 
