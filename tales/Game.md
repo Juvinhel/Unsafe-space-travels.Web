@@ -2,7 +2,7 @@
 
 Don't play this if youre not legally an adult in your country.
 
-[Start](Start)
+[Start](Start.md)
 [Test Battle]({{$ Game.Battle.begin({ 
     name: "snek",
     health: 50,

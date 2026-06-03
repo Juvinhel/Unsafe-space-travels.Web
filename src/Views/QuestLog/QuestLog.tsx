@@ -45,7 +45,7 @@ namespace Views.Quests
         if (li.classList.toggle("selected", !oldSelected))
         {
             li.expanded = true;
-            description.append(await Game.storyManager.render(quest.link, { quest }));
+            description.append(await Game.Story.render(quest.link, { quest }));
         }
     }
 }

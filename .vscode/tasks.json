@@ -186,12 +186,12 @@
             "hide": true,
         },
         {
-            "label": "Copy Story",
+            "label": "Copy Tales",
             "command": "Copy-Item",
             "type": "shell",
             "args": [
                 "-Path",
-                "story",
+                "tales",
                 "-Destination",
                 "dist",
                 "-Force",
@@ -218,7 +218,7 @@
                 "Copy Fonts",
                 "Copy Images",
                 "Copy Maps",
-                "Copy Story",
+                "Copy Tales",
                 "Generate Version",
             ],
             "group": {

@@ -6,14 +6,18 @@ namespace Game.World
         tilewidth: number;
         tileheight: number;
 
-        tilesets: Tileset[];
         ground: Ground[][];
         objects: Obj[];
     };
 
-    export type Tileset = Size & {
-        firstgid: number;
-        source: string;
+    export type Tileset = {
+        tiles: Tile[];
+    };
+
+    export type Tile = {
+        id: number;
+        link: string;
+        [name: string]: any;
     };
 
     export type Obj = Rect & {

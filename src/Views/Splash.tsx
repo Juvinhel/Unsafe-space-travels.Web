@@ -17,24 +17,20 @@ namespace Views
     {
         const progress = splash.querySelector("progress");
 
-        App.img = new RessourceDictionary("img", ["svg", "png"]);
-        await App.img.initialize();
-        console.log("Images: " + Object.keys(App.img.files).length);
+        const img = new RessourceDictionary("img", ["svg", "png"]);
+        await img.initialize();
 
-        App.maps = new RessourceDictionary("maps", ["tmx", "tsx"]);
-        await App.maps.initialize();
-        console.log("Maps: " + Object.keys(App.maps.files).length);
+        const maps = new RessourceDictionary("maps", ["tmx"]);
+        await maps.initialize();
 
-        App.story = new RessourceDictionary("story", ["md"]);
-        await App.story.initialize();
-        console.log("Stories: " + Object.keys(App.story.files).length);
+        const tales = new RessourceDictionary("tales", ["md"]);
+        await tales.initialize();
 
-        App.data = new RessourceDictionary("data", ["json", "js"]);
-        await App.data.initialize();
-        console.log("Data: " + Object.keys(App.data.files).length);
+        const data = new RessourceDictionary("data", ["json", "js"]);
+        await data.initialize();
 
-        progress.max = Object.keys(App.data.files).length + Object.keys(App.maps.files).length;
-        for (const file in App.data.files)
+        progress.max = data.length + tales.length + maps.length;
+        for (const file in data.files)
         {
             const [fileName, extension] = file.trimChar("/").split("/").last().splitLast(".");
             const text = await (await fetch("data/" + file)).text();
@@ -48,15 +44,18 @@ namespace Views
             ++progress.value;
         }
 
-        for (const file in App.maps.files)
+        for (const file in tales.files)
         {
-            const [fileName, extension] = file.trimChar("/").split("/").last().splitLast(".");
-            const text = await (await fetch("maps/" + file)).text();
-            switch (extension?.toLowerCase())
-            {
-                case "tmx":
-                case "tsx": Game.World.parser.parse(file, text); break;
-            }
+            const text = await (await fetch("tales/" + file)).text();
+            const link = resolveLink(file, "/tales/");
+            Game.Story.knownTales[link] = { link, text };
+            ++progress.value;
+        }
+
+        for (const file in maps.files)
+        {
+            const map = await Game.World.parser.loadMap(resolveLink(file, "/maps/"));
+            Game.World.knownMaps[map.link] = map;
             ++progress.value;
         }
 

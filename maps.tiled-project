@@ -14,7 +14,7 @@
             "id": 17,
             "members": [
                 {
-                    "name": "story",
+                    "name": "tale",
                     "type": "string",
                     "value": ""
                 }
@@ -72,7 +72,7 @@
                     "value": false
                 },
                 {
-                    "name": "story",
+                    "name": "tale",
                     "type": "string",
                     "value": ""
                 }

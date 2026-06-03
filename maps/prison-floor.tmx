@@ -32,22 +32,25 @@
  <objectgroup id="2" name="Objektebene 1">
   <object id="17" name="cell" type="Depiction" x="0" y="544" width="96" height="96">
    <properties>
-    <property name="story" value="/PrisonFloor/Cell/Cell"/>
+    <property name="tale" value="You are inside a tiny Cell."/>
    </properties>
   </object>
   <object id="1" name="Window" type="Depiction" x="0" y="608" width="64" height="32" visible="0">
    <properties>
-    <property name="story" value="/PrisonFloor/Cell/Window"/>
+    <property name="tale">As you look out of the window you can see a barren stone landscape.
+In the corner of the window you notice 2 digits written in the dust.
+71
+{{ questManager.find(&quot;Escape the Cell&quot;).foundWindow = true }}</property>
    </properties>
   </object>
   <object id="3" name="Bed" type="Depiction" x="64" y="576" width="32" height="64" visible="0">
    <properties>
-    <property name="story" value="/PrisonFloor/Cell/Bed"/>
+    <property name="tale" value="/tales/PrisonFloor/Cell/Bed.md"/>
    </properties>
   </object>
   <object id="4" name="Door" type="Depiction" x="64" y="544" width="32" height="32" visible="0">
    <properties>
-    <property name="story" value="/PrisonFloor/Cell/Door"/>
+    <property name="tale" value="/tales/PrisonFloor/Cell/Door.md"/>
    </properties>
   </object>
   <object id="6" name="cell-door" type="Object" gid="3" x="64" y="512" width="32" height="32">
@@ -57,17 +60,17 @@
   </object>
   <object id="14" name="inmate-processing" type="Depiction" x="0" y="352" width="160" height="64">
    <properties>
-    <property name="story" value="/PrisonFloor/Processing/Processing"/>
+    <property name="tale" value="/tales/PrisonFloor/Processing/Processing.md"/>
    </properties>
   </object>
   <object id="15" name="medical-station" type="Object" gid="4" x="32" y="352" width="32" height="32">
    <properties>
-    <property name="story" value="/PrisonFloor/Processing/MedicalStation"/>
+    <property name="tale" value="/tales/PrisonFloor/Processing/MedicalStation.md"/>
    </properties>
   </object>
   <object id="16" name="cabinet" type="Object" gid="5" x="128" y="352" width="32" height="32">
    <properties>
-    <property name="story" value="/PrisonFloor/Processing/MedicalCabinet"/>
+    <property name="tale" value="/tales/PrisonFloor/Processing/MedicalCabinet.md"/>
    </properties>
   </object>
   <object id="21" name="cell-door-2" type="Object" gid="3" x="192" y="512" width="32" height="32">
@@ -77,7 +80,7 @@
   </object>
   <object id="22" type="Depiction" x="192" y="480" width="32" height="32">
    <properties>
-    <property name="story" value="/PrisonFloor/SecondCellDoor"/>
+    <property name="tale" value="/tales/PrisonFloor/SecondCellDoor.md"/>
    </properties>
   </object>
  </objectgroup>

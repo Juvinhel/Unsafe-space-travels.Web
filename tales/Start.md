@@ -14,8 +14,8 @@ Refreshing beaches, cool drinks and ocean as far as the eye can see. Thats what 
 
 "You": Dammit some emergency? Maybe the door can be unlocked now.
 
-{{ questManager.add({ title: "Escape the Cell", link: "Quests/EscapeTheCell.md" }) }}
+{{ questManager.add({ title: "Escape the Cell", link: "/tales/Quests/EscapeTheCell.md" }) }}
 
 --- footer ---
-[Try opening your door]({{$ Game.World.goto("maps/prison-floor", { x: 0, y: 18 }); }})
+[Try opening your door]({{$ Game.World.goto("/maps/prison-floor.tmx", { x: 0, y: 18 }); }})
 --- ---

@@ -31,9 +31,4 @@ const App = new (class App
     public InputManager: InputManager;
     public KeyboardManager: KeyboardManager;
     public ImageSelector?: ImageSelector;
-
-    public img: RessourceDictionary;
-    public maps: RessourceDictionary;
-    public story: RessourceDictionary;
-    public data: RessourceDictionary;
 })();

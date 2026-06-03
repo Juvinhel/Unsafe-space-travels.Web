@@ -88,7 +88,7 @@ namespace Views.World
                 const style = {
                     gridColumn: object.x + 1,
                     gridRow: object.y + 1,
-                    backgroundImage: object.source ? "url('" + object.source + "')" : "none",
+                    backgroundImage: object.img ? "url('" + object.img + "')" : "none",
                     visibility: object.hidden ? "hidden" : "visible",
                 } as UI.Style;
                 yield <div class={ ["object"] } style={ style } object={ object } />;
@@ -102,7 +102,7 @@ namespace Views.World
                 const object = objectElement["object"] as Game.World.Object;
                 objectElement.style.gridColumn = (object.x + 1).toString();
                 objectElement.style.gridRow = (object.y + 1).toString();
-                objectElement.style.backgroundImage = object.source ? "url('" + object.source + "')" : "none";
+                objectElement.style.backgroundImage = object.img ? "url('" + object.img + "')" : "none";
                 objectElement.style.visibility = object.hidden ? "hidden" : "visible";
             }
             this.dispatchEvent(new CustomEvent(RefreshMovementEventName, { detail: this.playerPosition }));
@@ -178,14 +178,17 @@ namespace Views.World
             this.scrollToPosition(this.playerPosition);
 
             const objects = this.map.objects.filter(o => Game.World.contains(o, this.playerPosition));
-            const storyObject = objects.filter(x => "story" in x && x.story);
-            if (storyObject.length > 0)
+            const taleObject = objects.filter(x => "tale" in x && x.tale);
+            if (taleObject.length > 0)
             {
-                const dep = storyObject.last() as Game.World.Depiction;
-                Game.storyManager.show(dep.story);
+                const dep = taleObject.last() as Game.World.Depiction;
+                console.log("dep", dep);
+                let tale = dep.tale.startsWith("/") ? dep.tale : { link: this.map.link, text: dep.tale };
+                console.log("show depiction", tale);
+                Game.Story.show(tale);
             }
             else
-                Game.storyManager.clear();
+                Game.Story.clear();
         }
 
         private preventKeyBoardScroll(e: KeyboardEvent)

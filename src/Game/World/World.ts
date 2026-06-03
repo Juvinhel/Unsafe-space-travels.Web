@@ -1,5 +1,7 @@
 namespace Game.World
 {
+    export const knownMaps: { [type: string]: Map; } = {};
+
     let internal_movementAllowed: boolean = true;
     export function movementAllowed(value?: boolean): boolean
     {
@@ -22,25 +24,9 @@ namespace Game.World
         Game.data.position = null;
     }
 
-    function refineLink(link: string): string
-    {
-        if (link.endsWith(".map.json"))
-            link = link.substrEnd(".map.json".length);
-        link = link.trimLeft("/");
-        return link;
-    }
-
     async function get(link: string): Promise<Map>
     {
-        link = refineLink(link);
-
-        let url = link;
-        if (!url.endsWith(".map.json"))
-            url += ".map.json";
-
-        const response = await fetch(url);
-        const ret = await response.json() as Map;
-        ret.link = link;
+        const ret = Game.Data.clone(knownMaps[link]);
 
         if (link in Game.data.maps)
             ret.objects = Game.data.maps[link].objects;
@@ -65,7 +51,7 @@ namespace Game.World
 
     export function findObject(link: string, name: string): Obj
     {
-        link = refineLink(link);
+        //link = refineLink(link);
         if (link in Game.data.maps)
         {
             const map = Game.data.maps[link];

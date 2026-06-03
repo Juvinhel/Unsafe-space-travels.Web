@@ -4,10 +4,10 @@
  <tile id="0">
   <image source="../../img/tilesets/door.svg" width="512" height="512"/>
  </tile>
- <tile id="1" x="0" y="3" width="512" height="512">
-  <image source="medical-station.svg" width="512" height="512"/>
+ <tile id="1">
+  <image source="../../img/tilesets/medical-station.svg" width="512" height="512"/>
  </tile>
  <tile id="2">
-  <image source="cabinet.svg" width="512" height="512"/>
+  <image source="../../img/tilesets/cabinet.svg" width="512" height="512"/>
  </tile>
 </tileset>
