@@ -9,7 +9,7 @@ namespace Game.World
         {
             internal_movementAllowed = value;
 
-            Views.worldView.refreshMovePad();
+            Views.worldView?.refreshMovePad();
         }
 
         return internal_movementAllowed;

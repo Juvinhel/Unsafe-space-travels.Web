@@ -12,8 +12,6 @@ const App = new (class App
 
         await Views.ShowSplash();
 
-        console.log("loaded");
-
         this.InputManager = new InputManager();
         this.KeyboardManager = new KeyboardManager();
         this.KeyboardManager.InputManager = this.InputManager;

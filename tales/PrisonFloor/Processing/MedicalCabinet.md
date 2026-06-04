@@ -1,4 +1,3 @@
-{{> Processing.md }}
 You open the large cabinet. There some primitive cleaning tools and a small box in it.
 
 --- footer ---

@@ -16,7 +16,6 @@ namespace Game.World
             if (p.x >= this.map.width) return false;
             if (p.y >= this.map.height) return false;
             if (this.map.ground[p.y][p.x] != "Passable") return false;
-            if (this.hasBlockingObject(p)) return false;
             return true;
         }
 

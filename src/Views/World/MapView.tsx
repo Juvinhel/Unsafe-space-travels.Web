@@ -83,29 +83,29 @@ namespace Views.World
 
         private * buildObjects()
         {
-            for (const interactive of this.map.objects.filter(x => Game.World.isInteractive(x)))
+            for (const object of this.map.objects.filter(x => Game.World.isObejct(x)))
             {
                 const style = {
-                    gridColumn: interactive.x + 1,
-                    gridRow: interactive.y + 1,
-                    backgroundImage: interactive.img ? "url('" + interactive.img + "')" : "none",
-                    visibility: interactive.hidden ? "hidden" : "visible",
+                    gridColumn: object.x + 1,
+                    gridRow: object.y + 1,
+                    backgroundImage: object.img ? "url('" + object.img + "')" : "none",
                 } as UI.Style;
-                yield <div class={ ["object", "interactive"] } style={ style } interactive={ interactive } />;
+                yield <div class={ ["object", object.type.toLowerCase()] } style={ style } x-attribute={ object.x } y-attribute={ object.y } object={ object } hidden={ object.hidden } />;
             }
         }
 
         public refreshObjects()
         {
             for (const objectElement of this.gridDiv.querySelectorAll(".object") as NodeListOf<HTMLDivElement>)
-                if (objectElement.classList.contains("interactive"))
-                {
-                    const interactive = objectElement["interactive"] as Game.World.Interactive;
-                    objectElement.style.gridColumn = (interactive.x + 1).toString();
-                    objectElement.style.gridRow = (interactive.y + 1).toString();
-                    objectElement.style.backgroundImage = interactive.img ? "url('" + interactive.img + "')" : "none";
-                    objectElement.style.visibility = interactive.hidden ? "hidden" : "visible";
-                }
+            {
+                const object = objectElement["object"] as Game.World.Object;
+                objectElement.style.gridColumn = (object.x + 1).toString();
+                objectElement.style.gridRow = (object.y + 1).toString();
+                objectElement.style.backgroundImage = object.img ? "url('" + object.img + "')" : "none";
+                objectElement.hidden = !!object.hidden;
+                objectElement.setAttribute("x", object.x.toString());
+                objectElement.setAttribute("y", object.y.toString());
+            }
             this.dispatchEvent(new CustomEvent(RefreshMovementEventName, { detail: this.playerPosition }));
         }
 
@@ -118,6 +118,12 @@ namespace Views.World
         private getTile(p: Game.World.Point)  
         {
             return this.gridDiv.querySelector(".tile[x='" + p.x + "'][y='" + p.y + "']");
+        }
+
+        private getObject(p: Game.World.Point, includeHidden: boolean = false): Game.World.Object
+        {
+            const objectElement = this.gridDiv.querySelector(".object[x='" + p.x + "'][y='" + p.y + "']" + (includeHidden ? "" : ":not([hidden])"));
+            return objectElement?.["object"];
         }
 
         public player = new class Player
@@ -154,24 +160,73 @@ namespace Views.World
 
             public goto(p: Game.World.Point)
             {
-                this.position = p;
-                Game.data.position = { map: this.mapView.map.link, x: this.position.x, y: this.position.y };
+                const object = this.mapView.getObject(p);
 
-                const playerDiv = this.mapView.gridDiv.querySelector(".player") as HTMLDivElement;
-                playerDiv.style.gridColumn = (this.position.x + 1).toString();
-                playerDiv.style.gridRow = (this.position.y + 1).toString();
-                this.mapView.scrollToPosition(p);
+                if (!object?.blocking)
+                {
+                    this.position = p;
+                    Game.data.position = { map: this.mapView.map.link, x: this.position.x, y: this.position.y };
 
-                this.mapView.enterPosition();
+                    const playerDiv = this.mapView.gridDiv.querySelector(".player") as HTMLDivElement;
+                    playerDiv.style.gridColumn = (this.position.x + 1).toString();
+                    playerDiv.style.gridRow = (this.position.y + 1).toString();
+                    this.mapView.scrollToPosition(p);
 
-                this.mapView.dispatchEvent(new CustomEvent(RefreshMovementEventName, { detail: this.position }));
-                this.mapView.coordinatesSpan.innerText = this.position.x + ":" + this.position.y;
+                    this.mapView.enterPosition();
+
+                    this.mapView.dispatchEvent(new CustomEvent(RefreshMovementEventName, { detail: this.position }));
+                    this.mapView.coordinatesSpan.innerText = this.position.x + ":" + this.position.y;
+                }
+
+                if (object)
+                {   // interact with object
+                    this.mapView.stopAutoMove();
+                    if ("tale" in object)
+                    {
+                        const tale = object.tale.startsWith("/") ? object.tale : { link: this.mapView.map.link, text: object.tale };
+                        Game.Story.show(tale, null, true);
+                    }
+                    return;
+                }
             }
 
-            public get canUp(): boolean { return Game.World.movementAllowed() && this.mapView.helper.isPassable({ x: this.position.x, y: this.position.y - 1 }); }
-            public get canDown(): boolean { return Game.World.movementAllowed() && this.mapView.helper.isPassable({ x: this.position.x, y: this.position.y + 1 }); }
-            public get canLeft(): boolean { return Game.World.movementAllowed() && this.mapView.helper.isPassable({ x: this.position.x - 1, y: this.position.y }); }
-            public get canRight(): boolean { return Game.World.movementAllowed() && this.mapView.helper.isPassable({ x: this.position.x + 1, y: this.position.y }); }
+            public get canUp(): boolean { return this.mapView.helper.isPassable({ x: this.position.x, y: this.position.y - 1 }); }
+            public get canDown(): boolean { return this.mapView.helper.isPassable({ x: this.position.x, y: this.position.y + 1 }); }
+            public get canLeft(): boolean { return this.mapView.helper.isPassable({ x: this.position.x - 1, y: this.position.y }); }
+            public get canRight(): boolean { return this.mapView.helper.isPassable({ x: this.position.x + 1, y: this.position.y }); }
+
+            public get upAction(): DirectionAction
+            {
+                const object = this.mapView.getObject({ x: this.position.x, y: this.position.y - 1 });
+                if (!object) return "Move";
+                if (Game.World.isInteractive(object)) return "Examine";
+                if (Game.World.isPerson(object)) return "Talk";
+                return "Move";
+            }
+            public get downAction(): DirectionAction
+            {
+                const object = this.mapView.getObject({ x: this.position.x, y: this.position.y + 1 });
+                if (!object) return "Move";
+                if (Game.World.isInteractive(object)) return "Examine";
+                if (Game.World.isPerson(object)) return "Talk";
+                return "Move";
+            }
+            public get leftAction(): DirectionAction
+            {
+                const object = this.mapView.getObject({ x: this.position.x - 1, y: this.position.y });
+                if (!object) return "Move";
+                if (Game.World.isInteractive(object)) return "Examine";
+                if (Game.World.isPerson(object)) return "Talk";
+                return "Move";
+            }
+            public get rightAction(): DirectionAction
+            {
+                const object = this.mapView.getObject({ x: this.position.x + 1, y: this.position.y });
+                if (!object) return "Move";
+                if (Game.World.isInteractive(object)) return "Examine";
+                if (Game.World.isPerson(object)) return "Talk";
+                return "Move";
+            }
         }(this);
 
         private enterPosition()

@@ -30,10 +30,10 @@ namespace Views.World
         private build()
         {
             return (<div id="move-pad-root">
-                <button id="move-pad-up" onclick={ () => this.up() }></button>
-                <button id="move-pad-down" onclick={ () => this.down() }></button>
-                <button id="move-pad-left" onclick={ () => this.left() }></button>
-                <button id="move-pad-right" onclick={ () => this.right() }></button>
+                <button id="move-pad-up" state="Move" onclick={ () => this.up() }></button>
+                <button id="move-pad-down" state="Move" onclick={ () => this.down() }></button>
+                <button id="move-pad-left" state="Move" onclick={ () => this.left() }></button>
+                <button id="move-pad-right" state="Move" onclick={ () => this.right() }></button>
             </div>);
         }
 
@@ -48,6 +48,18 @@ namespace Views.World
 
         public get canRight(): boolean { return !this.rightButton.disabled; }
         public set canRight(value: boolean) { this.rightButton.disabled = !value; }
+
+        public get upState(): DirectionAction { return this.upButton.getAttribute("state") as DirectionAction; }
+        public set upState(state: DirectionAction) { this.upButton.setAttribute("state", state); }
+
+        public get downState(): DirectionAction { return this.downButton.getAttribute("state") as DirectionAction; }
+        public set downState(state: DirectionAction) { this.downButton.setAttribute("state", state); }
+
+        public get leftState(): DirectionAction { return this.leftButton.getAttribute("state") as DirectionAction; }
+        public set leftState(state: DirectionAction) { this.leftButton.setAttribute("state", state); }
+
+        public get rightState(): DirectionAction { return this.rightButton.getAttribute("state") as DirectionAction; }
+        public set rightState(state: DirectionAction) { this.rightButton.setAttribute("state", state); }
 
         private up()
         {
@@ -125,5 +137,7 @@ namespace Views.World
             }
         }
     }
+
+    export type DirectionAction = "Move" | "Examine" | "Talk";
 }
 customElements.define("move-pad", Views.World.MovePad);

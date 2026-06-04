@@ -39,10 +39,30 @@ namespace Views.World
 
         public refreshMovePad()
         {
-            this.movePad.canUp = this.mapView.player.canUp;
-            this.movePad.canDown = this.mapView.player.canDown;
-            this.movePad.canLeft = this.mapView.player.canLeft;
-            this.movePad.canRight = this.mapView.player.canRight;
+            if (Game.World.movementAllowed() && this.mapView.loaded)
+            {
+                this.movePad.canUp = this.mapView.player.canUp;
+                this.movePad.canDown = this.mapView.player.canDown;
+                this.movePad.canLeft = this.mapView.player.canLeft;
+                this.movePad.canRight = this.mapView.player.canRight;
+
+                this.movePad.upState = this.mapView.player.upAction;
+                this.movePad.downState = this.mapView.player.downAction;
+                this.movePad.leftState = this.mapView.player.leftAction;
+                this.movePad.rightState = this.mapView.player.rightAction;
+            }
+            else
+            {
+                this.movePad.canUp = false;
+                this.movePad.canDown = false;
+                this.movePad.canLeft = false;
+                this.movePad.canRight = false;
+
+                this.movePad.upState = "Move";
+                this.movePad.downState = "Move";
+                this.movePad.leftState = "Move";
+                this.movePad.rightState = "Move";
+            }
         }
 
         public unload()

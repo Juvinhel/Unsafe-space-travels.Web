@@ -21,7 +21,6 @@ namespace Game.Story
 
     async function get(url: string): Promise<Tale>
     {
-        console.log("get", url);
         let [link, hash] = url.splitFirst("#");
 
         hash = hash?.trimChar("/");
@@ -128,13 +127,13 @@ namespace Game.Story
         predecessor.remove();
     }
 
-    export async function show(tale: Tale | string, args?: Durian.Template.Arguments, params?: Durian.Template.Parameters): Promise<void>
+    export async function show(tale: Tale | string, title: string = null, allowClose: boolean | null = false): Promise<void>
     {
         if (typeof tale === "string") tale = await get(tale);
-        const article = await render(tale, args, params);
+        const article = await render(tale);
 
-        const title = article.querySelector("title")?.innerText;
-        Views.Story.ShowStoryDialog(title, article);
+        title = article.querySelector("title")?.innerText ?? title ?? "";
+        Views.Story.ShowStoryDialog(article, title, allowClose);
     }
 
     export async function showAmbient(...tales: (Tale | string)[])

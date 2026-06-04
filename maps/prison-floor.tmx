@@ -60,32 +60,29 @@ The bed looks quite comfortable despite beeing in an eerie place like this.
   <object id="6" name="cell-door" type="Interactive" gid="3" x="64" y="512" width="32" height="32">
    <properties>
     <property name="blocking" type="bool" value="true"/>
+    <property name="hidden" type="bool" value="false"/>
     <property name="tale" value="/tales/PrisonFloor/Cell/Door.md"/>
    </properties>
   </object>
   <object id="14" name="inmate-processing" type="Ambient" x="0" y="352" width="160" height="64">
    <properties>
-    <property name="tale" value="/tales/PrisonFloor/Processing/Processing.md"/>
+    <property name="tale" value="There is a large chair with shackles attached to the armrests. Beneath is a steel table with various syringes and other medical tools. A large monitor seems to output bodystats. Seems like new Prisoners were scanned and injected something here."/>
    </properties>
   </object>
-  <object id="15" name="medical-station" type="Object" gid="4" x="32" y="352" width="32" height="32">
+  <object id="15" name="medical-station" type="Interactive" gid="4" x="32" y="352" width="32" height="32">
    <properties>
     <property name="tale" value="/tales/PrisonFloor/Processing/MedicalStation.md"/>
    </properties>
   </object>
-  <object id="16" name="cabinet" type="Object" gid="5" x="128" y="352" width="32" height="32">
+  <object id="16" name="cabinet" type="Interactive" gid="5" x="128" y="352" width="32" height="32">
    <properties>
+    <property name="blocking" type="bool" value="true"/>
     <property name="tale" value="/tales/PrisonFloor/Processing/MedicalCabinet.md"/>
    </properties>
   </object>
   <object id="21" name="cell-door-2" type="Object" gid="3" x="192" y="512" width="32" height="32">
    <properties>
     <property name="blocking" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="22" type="Ambient" x="192" y="480" width="32" height="32">
-   <properties>
-    <property name="tale" value="/tales/PrisonFloor/SecondCellDoor.md"/>
    </properties>
   </object>
  </objectgroup>

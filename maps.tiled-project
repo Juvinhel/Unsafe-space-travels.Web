@@ -42,7 +42,7 @@
         },
         {
             "color": "#ff242aa4",
-            "drawFill": true,
+            "drawFill": false,
             "id": 21,
             "members": [
                 {
@@ -64,7 +64,6 @@
             "name": "Interactive",
             "type": "class",
             "useAs": [
-                "property",
                 "object",
                 "project"
             ]
@@ -89,7 +88,7 @@
         },
         {
             "color": "#ffa0a0a4",
-            "drawFill": true,
+            "drawFill": false,
             "id": 19,
             "members": [
                 {
@@ -109,6 +108,34 @@
                 }
             ],
             "name": "Object",
+            "type": "class",
+            "useAs": [
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ff242aa4",
+            "drawFill": false,
+            "id": 21,
+            "members": [
+                {
+                    "name": "blocking",
+                    "type": "bool",
+                    "value": true
+                },
+                {
+                    "name": "hidden",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "tale",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Person",
             "type": "class",
             "useAs": [
                 "object",

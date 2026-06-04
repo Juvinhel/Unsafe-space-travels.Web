@@ -11,17 +11,38 @@ namespace Game.World
         tale: string;
     };
 
+    export function isObejct(o: Obj): o is Object
+    {
+        return "img" in o;
+    }
+
+    export type Object = Obj & {
+        type: string;
+        img: string;
+        tale?: string;
+        blocking?: boolean;
+        hidden?: boolean;
+    };
+
     export function isInteractive(o: Obj): o is Interactive
     {
         return o.type == "Interactive";
     }
 
-    export type Interactive = Obj &
+    export type Interactive = Object &
     {
         type: "Interactive";
         tale: string;
-        img: string;
-        hidden: boolean;
-        blocking: boolean;
+    };
+
+    export function isPerson(o: Obj): o is Person
+    {
+        return o.type == "Person";
+    }
+
+    export type Person = Object &
+    {
+        type: "Person";
+        tale: string;
     };
 }
