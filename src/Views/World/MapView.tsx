@@ -84,28 +84,13 @@ namespace Views.World
         private * buildObjects()
         {
             for (const object of this.map.objects.filter(x => Game.World.isObejct(x)))
-            {
-                const style = {
-                    gridColumn: object.x + 1,
-                    gridRow: object.y + 1,
-                    backgroundImage: object.img ? "url('" + object.img + "')" : "none",
-                } as UI.Style;
-                yield <div class={ ["object", object.type.toLowerCase()] } style={ style } x-attribute={ object.x } y-attribute={ object.y } object={ object } hidden={ object.hidden } />;
-            }
+                yield new MapObject(object);   //<div class={ ["object", object.type.toLowerCase()] } style={ style } x-attribute={ object.x } y-attribute={ object.y } object={ object } hidden={ object.hidden } />;
         }
 
         public refreshObjects()
         {
-            for (const objectElement of this.gridDiv.querySelectorAll(".object") as NodeListOf<HTMLDivElement>)
-            {
-                const object = objectElement["object"] as Game.World.Object;
-                objectElement.style.gridColumn = (object.x + 1).toString();
-                objectElement.style.gridRow = (object.y + 1).toString();
-                objectElement.style.backgroundImage = object.img ? "url('" + object.img + "')" : "none";
-                objectElement.hidden = !!object.hidden;
-                objectElement.setAttribute("x", object.x.toString());
-                objectElement.setAttribute("y", object.y.toString());
-            }
+            for (const objectElement of this.gridDiv.querySelectorAll("map-object") as NodeListOf<MapObject>)
+                objectElement.refresh();
             this.dispatchEvent(new CustomEvent(RefreshMovementEventName, { detail: this.playerPosition }));
         }
 
@@ -122,8 +107,8 @@ namespace Views.World
 
         private getObject(p: Game.World.Point, includeHidden: boolean = false): Game.World.Object
         {
-            const objectElement = this.gridDiv.querySelector(".object[x='" + p.x + "'][y='" + p.y + "']" + (includeHidden ? "" : ":not([hidden])"));
-            return objectElement?.["object"];
+            const objectElement = this.gridDiv.querySelector("map-object[x='" + p.x + "'][y='" + p.y + "']" + (includeHidden ? "" : ":not([hidden])")) as MapObject;
+            return objectElement?.object;
         }
 
         public player = new class Player

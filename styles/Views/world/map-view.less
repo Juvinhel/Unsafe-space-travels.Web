@@ -49,10 +49,19 @@ map-view
             outline: 3px solid var(--accent-color);
         }
 
-        > .object
+        > map-object
         {
             z-index: 150;
-            background-size: cover;
+
+            &.interactive
+            {
+                cursor: url("img/icons/examine.png") 8 16, pointer;
+            }
+
+            &.person
+            {
+                cursor: url("img/icons/talk.png") 8 16, pointer;
+            }
         }
     }
 
