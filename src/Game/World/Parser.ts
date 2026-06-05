@@ -20,7 +20,7 @@ namespace Game.World
 
         /* private */ async parseMap(link: string, path: string, fileName: string, extension: string, root: Element): Promise<Map>
         {
-            const name = this.readProperty(root, "name")?.value ?? fileName;
+            const name = this.parseProperties(root)["name"] as string ?? fileName;
             const width = parseInt(root.getAttribute("width"));
             const height = parseInt(root.getAttribute("height"));
             const tilewidth = parseInt(root.getAttribute("tilewidth"));
@@ -51,6 +51,26 @@ namespace Game.World
             const firstLayerElement = root.querySelector(":scope > layer");
             const firstLayer = this.getLayer(firstLayerElement);
             const ground: Ground[][] = firstLayer.map(x => x.map(x => (x == 0 ? "Impassable" : "Passable") as Ground));
+
+            const layers: Layer[] = [];
+            for (const layerElement of root.querySelectorAll(":scope > layer"))
+            {
+                const tiles = this.getLayer(layerElement);
+                const layer: Layer = { cells: [] };
+                for (let y = 0; y < tiles.length; ++y)
+                {
+                    const row: Cell[] = [];
+                    for (let x = 0; x < tiles[y].length; ++x)
+                    {
+                        const gid = tiles[y][x];
+                        const img = mergedTiles[gid];
+
+                    }
+                    layer.cells.push(row);
+                }
+
+                layers.push(layer);
+            }
 
             const objects: Obj[] = [];
             for (const objectElement of root.querySelectorAll(":scope > objectgroup > object"))
@@ -131,14 +151,6 @@ namespace Game.World
             return ret;
         }
 
-        /* private */ readProperty(element: Element, name: string): IProperty
-        {
-            const property = element.querySelector(":scope > properties > property[name='" + name + "']") as Element;
-            if (!property) return null;
-            const value = property.getAttribute("value");
-            return { name, value };
-        }
-
         /* private */ parseProperties(element: Element): { [name: string]: any; }
         {
             const ret = {};
@@ -160,10 +172,4 @@ namespace Game.World
             return ret;
         }
     }();
-
-    interface IProperty
-    {
-        name: string;
-        value: string;
-    }
 }

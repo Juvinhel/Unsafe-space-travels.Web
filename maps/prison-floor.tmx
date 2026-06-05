@@ -4,7 +4,7 @@
   <property name="name" value="Prison Floor"/>
  </properties>
  <tileset firstgid="1" source="tilesets/base.tsx"/>
- <tileset firstgid="7" source="tilesets/interior.tsx"/>
+ <tileset firstgid="20" source="tilesets/interior.tsx"/>
  <layer id="1" name="Kachelebene 1" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -57,7 +57,7 @@ The bed looks quite comfortable despite beeing in an eerie place like this.
 --- footer ---</property>
    </properties>
   </object>
-  <object id="6" name="cell-door" type="Interactive" gid="7" x="64" y="512" width="32" height="32">
+  <object id="6" name="cell-door" type="Interactive" gid="20" x="64" y="512" width="32" height="32">
    <properties>
     <property name="blocking" type="bool" value="true"/>
     <property name="hidden" type="bool" value="false"/>
@@ -69,20 +69,20 @@ The bed looks quite comfortable despite beeing in an eerie place like this.
     <property name="tale" value="There is a large chair with shackles attached to the armrests. Beneath is a steel table with various syringes and other medical tools. A large monitor seems to output bodystats. Seems like new Prisoners were scanned and injected something here."/>
    </properties>
   </object>
-  <object id="15" name="medical-station" type="Interactive" gid="8" x="32" y="352" width="32" height="32">
+  <object id="15" name="medical-station" type="Interactive" gid="21" x="32" y="352" width="32" height="32">
    <properties>
     <property name="blocking" type="bool" value="false"/>
     <property name="category" propertytype="InteractiveAction" value="Talk"/>
     <property name="tale" value="/tales/PrisonFloor/Processing/MedicalStation.md"/>
    </properties>
   </object>
-  <object id="16" name="cabinet" type="Interactive" gid="9" x="128" y="352" width="32" height="32">
+  <object id="16" name="cabinet" type="Interactive" gid="22" x="128" y="352" width="32" height="32">
    <properties>
     <property name="blocking" type="bool" value="true"/>
     <property name="tale" value="/tales/PrisonFloor/Processing/MedicalCabinet.md"/>
    </properties>
   </object>
-  <object id="21" name="cell-door-2" type="Object" gid="7" x="192" y="512" width="32" height="32">
+  <object id="21" name="cell-door-2" type="Object" gid="20" x="192" y="512" width="32" height="32">
    <properties>
     <property name="blocking" type="bool" value="true"/>
    </properties>
@@ -110,8 +110,8 @@ The bed looks quite comfortable despite beeing in an eerie place like this.
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+17,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+17,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

@@ -11,6 +11,7 @@ namespace Game.World
         public height: number;
 
         public ground: Ground[][];
+        public layers: Layer[][];
         public objects: Obj[];
 
         public isPassable(p: Point): boolean
@@ -50,6 +51,15 @@ namespace Game.World
 
     export type Tile = {
         id: number;
+        link: string;
+        [name: string]: any;
+    };
+
+    export type Layer = {
+        cells: Cell[][];
+    };
+
+    export type Cell = {
         link: string;
         [name: string]: any;
     };
