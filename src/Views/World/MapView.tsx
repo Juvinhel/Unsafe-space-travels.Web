@@ -19,6 +19,7 @@ namespace Views.World
 
         private coordinatesSpan: HTMLSpanElement;
         private gridDiv: HTMLDivElement;
+        private playerDiv: HTMLDivElement;
 
         private build()
         {
@@ -40,8 +41,8 @@ namespace Views.World
             this.gridDiv.style.setProperty("--rows-count", this.map.height.toFixed());
 
             this.gridDiv.clearChildren();
+            this.gridDiv.append(this.playerDiv = <div class="player" style={ { gridColumn: 1, gridRow: 1 } } /> as HTMLDivElement);
             this.gridDiv.append(...this.buildTiles());
-            this.gridDiv.append(<div class="player" style={ { gridColumn: 1, gridRow: 1 } } />);
             this.gridDiv.append(...this.buildObjects());
 
             this.player.teleport(this.playerPosition);
@@ -83,8 +84,8 @@ namespace Views.World
 
         private * buildObjects()
         {
-            for (const object of this.map.objects.filter(x => Game.World.isObejct(x)))
-                yield new MapObject(object);   //<div class={ ["object", object.type.toLowerCase()] } style={ style } x-attribute={ object.x } y-attribute={ object.y } object={ object } hidden={ object.hidden } />;
+            for (const object of this.map.objects.filter(x => Game.World.isObject(x)))
+                yield new MapObject(object);
         }
 
         public refreshObjects()
@@ -103,12 +104,6 @@ namespace Views.World
         private getTile(p: Game.World.Point)  
         {
             return this.gridDiv.querySelector(".tile[x='" + p.x + "'][y='" + p.y + "']");
-        }
-
-        private getObject(p: Game.World.Point, includeHidden: boolean = false): Game.World.Object
-        {
-            const objectElement = this.gridDiv.querySelector("map-object[x='" + p.x + "'][y='" + p.y + "']" + (includeHidden ? "" : ":not([hidden])")) as MapObject;
-            return objectElement?.object;
         }
 
         public player = new class Player
@@ -145,34 +140,7 @@ namespace Views.World
 
             public goto(p: Game.World.Point)
             {
-                const object = this.mapView.getObject(p);
-
-                if (!object?.blocking)
-                {
-                    this.position = p;
-                    Game.data.position = { map: this.mapView.map.link, x: this.position.x, y: this.position.y };
-
-                    const playerDiv = this.mapView.gridDiv.querySelector(".player") as HTMLDivElement;
-                    playerDiv.style.gridColumn = (this.position.x + 1).toString();
-                    playerDiv.style.gridRow = (this.position.y + 1).toString();
-                    this.mapView.scrollToPosition(p);
-
-                    this.mapView.enterPosition();
-
-                    this.mapView.dispatchEvent(new CustomEvent(RefreshMovementEventName, { detail: this.position }));
-                    this.mapView.coordinatesSpan.innerText = this.position.x + ":" + this.position.y;
-                }
-
-                if (object)
-                {   // interact with object
-                    this.mapView.stopAutoMove();
-                    if ("tale" in object)
-                    {
-                        const tale = object.tale.startsWith("/") ? object.tale : { link: this.mapView.map.link, text: object.tale };
-                        Game.Story.show(tale, null, true);
-                    }
-                    return;
-                }
+                this.mapView.enterPosition(p);
             }
 
             public get canUp(): boolean { return this.mapView.helper.isPassable({ x: this.position.x, y: this.position.y - 1 }); }
@@ -182,7 +150,7 @@ namespace Views.World
 
             public get upAction(): DirectionAction
             {
-                const object = this.mapView.getObject({ x: this.position.x, y: this.position.y - 1 });
+                const object = this.mapView.helper.getTopObject({ x: this.position.x, y: this.position.y - 1 });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return "Examine";
                 if (Game.World.isPerson(object)) return "Talk";
@@ -190,7 +158,7 @@ namespace Views.World
             }
             public get downAction(): DirectionAction
             {
-                const object = this.mapView.getObject({ x: this.position.x, y: this.position.y + 1 });
+                const object = this.mapView.helper.getTopObject({ x: this.position.x, y: this.position.y + 1 });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return "Examine";
                 if (Game.World.isPerson(object)) return "Talk";
@@ -198,7 +166,7 @@ namespace Views.World
             }
             public get leftAction(): DirectionAction
             {
-                const object = this.mapView.getObject({ x: this.position.x - 1, y: this.position.y });
+                const object = this.mapView.helper.getTopObject({ x: this.position.x - 1, y: this.position.y });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return "Examine";
                 if (Game.World.isPerson(object)) return "Talk";
@@ -206,7 +174,7 @@ namespace Views.World
             }
             public get rightAction(): DirectionAction
             {
-                const object = this.mapView.getObject({ x: this.position.x + 1, y: this.position.y });
+                const object = this.mapView.helper.getTopObject({ x: this.position.x + 1, y: this.position.y });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return "Examine";
                 if (Game.World.isPerson(object)) return "Talk";
@@ -214,16 +182,53 @@ namespace Views.World
             }
         }(this);
 
-        private enterPosition()
+        private enterPosition(p: Game.World.Point): boolean
         {
-            this.scrollToPosition(this.playerPosition);
+            const object = this.helper.getTopObject(p);
+            if (!object || !object.blocking)
+            {   // can enter new position
+                this.playerPosition = p;
+                Game.data.position = { map: this.map.link, x: this.playerPosition.x, y: this.playerPosition.y };
 
-            const objects = this.map.objects.filter(o => Game.World.contains(o, this.playerPosition));
-            const ambients = objects.filter(x => Game.World.isAmbient(x));
+                this.playerDiv.style.gridColumn = (this.playerPosition.x + 1).toString();
+                this.playerDiv.style.gridRow = (this.playerPosition.y + 1).toString();
+                this.scrollToPosition(this.playerPosition);
 
-            const tales = ambients.map(x => x.tale.startsWith("/") ? x.tale : { link: this.map.link, text: x.tale });
+                const ambients = this.helper.getAmbients(this.playerPosition);
+                const tales = ambients.map(x => x.tale.startsWith("/") ? x.tale : { link: this.map.link, text: x.tale });
+                Game.Story.showAmbient(...tales);
 
-            Game.Story.showAmbient(...tales);
+                this.dispatchEvent(new CustomEvent(RefreshMovementEventName, { detail: this.playerPosition }));
+                this.coordinatesSpan.innerText = this.playerPosition.x + ":" + this.playerPosition.y;
+            }
+
+            if (object)
+            {   // interact with object
+                this.stopAutoMove();
+                if ("tale" in object)
+                {
+                    const tale = object.tale.startsWith("/") ? object.tale : { link: this.map.link, text: object.tale };
+                    Game.Story.show(tale, null, true);
+                }
+                return;
+            }
+
+            const events = this.helper.getEvents(this.playerPosition);
+            for (const event of events)
+                if (event.probability && Math.random() < event.probability)
+                {
+                    this.stopAutoMove();
+                    const tale = event.tale.startsWith("/") ? event.tale : { link: this.map.link, text: event.tale };
+                    Game.Story.show(tale, null, false);
+                }
+
+            const encounters = this.helper.getEncounters(this.playerPosition);
+            for (const encounter of encounters)
+                if (encounter.probability && Math.random() < encounter.probability)
+                {
+                    this.stopAutoMove();
+                    //TODO:
+                }
         }
 
         private preventKeyBoardScroll(e: KeyboardEvent)

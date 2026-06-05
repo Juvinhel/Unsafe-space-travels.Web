@@ -11,7 +11,30 @@ namespace Game.World
         tale: string;
     };
 
-    export function isObejct(o: Obj): o is Object
+    export function isEvent(o: Obj): o is Event
+    {
+        return o.type == "Event";
+    }
+
+    export type Event = Object &
+    {
+        type: "Event";
+        tale: string;
+        probability?: number;
+    };
+
+    export function isEncounter(o: Obj): o is Encounter
+    {
+        return o.type == "Encounter";
+    }
+
+    export type Encounter = Object &
+    {   //TODO:
+        type: "Event";
+        probability?: number;
+    };
+
+    export function isObject(o: Obj): o is Object
     {
         return "img" in o;
     }

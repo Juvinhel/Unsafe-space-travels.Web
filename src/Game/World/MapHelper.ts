@@ -19,9 +19,24 @@ namespace Game.World
             return true;
         }
 
-        public hasBlockingObject(p: Point)
+        public getTopObject(p: Point, includeHidden: boolean = false): Object
         {
-            return this.map.objects.filter(o => "blocking" in o).some(o => contains(o, p) && o.blocking);
+            return this.map.objects.filter(x => isObject(x) && contains(x, p) && (!x.hidden || includeHidden)).first() as Object;
+        }
+
+        public getAmbients(p: Point): Ambient[]
+        {
+            return this.map.objects.filter(x => Game.World.isAmbient(x) && Game.World.contains(x, p)) as Ambient[];
+        }
+
+        public getEvents(p: Point): Event[]
+        {
+            return this.map.objects.filter(x => isEvent(x) && contains(x, p)) as Event[];
+        }
+
+        public getEncounters(p: Point): Encounter[]
+        {
+            return this.map.objects.filter(x => isEncounter(x) && contains(x, p)) as Encounter[];
         }
     };
 }

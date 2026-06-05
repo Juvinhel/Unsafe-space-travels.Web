@@ -25,7 +25,7 @@ namespace Game.Story
 
         hash = hash?.trimChar("/");
         const tale = knownTales[link];
-        return tale;
+        return { link: url, text: tale.text };
     }
 
     async function compile(tale: Tale | string): Promise<Durian.Template.Template>

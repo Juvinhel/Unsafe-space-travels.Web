@@ -5,6 +5,9 @@ function resolveLink(link: string, parent?: string): string
 
     if (link.startsWith("/")) return resolveUp(link);
 
+    if (link.startsWith("#"))
+        return resolveUp(parent + link);
+
     if (!parent.endsWith("/"))
     {
         if (parent.includes("/"))
@@ -20,6 +23,8 @@ function resolveLink(link: string, parent?: string): string
 function resolveUp(link: string): string
 {
     while (link.includes("//")) link = link.replace("//", "/");
+    let anchor: string;
+    if (link.includes("#")) [link, anchor] = link.splitFirst("#");
     const rooted = link.startsWith("/");
     const directory = link.endsWith("/");
     const parts = link.trimChar("/").split("/");
@@ -38,6 +43,7 @@ function resolveUp(link: string): string
 
     if (rooted) ret = "/" + ret;
     if (directory) ret = ret + "/";
+    if (anchor) ret = ret + "#" + anchor;
 
     return ret.toString();
 }
