@@ -70,6 +70,12 @@
             "id": 21,
             "members": [
                 {
+                    "name": "action",
+                    "propertyType": "InteractiveAction",
+                    "type": "string",
+                    "value": "Examine"
+                },
+                {
                     "name": "blocking",
                     "type": "bool",
                     "value": true
@@ -91,6 +97,17 @@
                 "object",
                 "project"
             ]
+        },
+        {
+            "id": 23,
+            "name": "InteractiveAction",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Examine",
+                "Talk"
+            ],
+            "valuesAsFlags": false
         },
         {
             "color": "#ffa0a0a4",
@@ -132,34 +149,6 @@
                 }
             ],
             "name": "Object",
-            "type": "class",
-            "useAs": [
-                "object",
-                "project"
-            ]
-        },
-        {
-            "color": "#ff242aa4",
-            "drawFill": false,
-            "id": 21,
-            "members": [
-                {
-                    "name": "blocking",
-                    "type": "bool",
-                    "value": true
-                },
-                {
-                    "name": "hidden",
-                    "type": "bool",
-                    "value": false
-                },
-                {
-                    "name": "tale",
-                    "type": "string",
-                    "value": ""
-                }
-            ],
-            "name": "Person",
             "type": "class",
             "useAs": [
                 "object",

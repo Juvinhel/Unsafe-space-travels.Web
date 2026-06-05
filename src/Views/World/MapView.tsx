@@ -152,32 +152,28 @@ namespace Views.World
             {
                 const object = this.mapView.helper.getTopObject({ x: this.position.x, y: this.position.y - 1 });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return "Examine";
-                if (Game.World.isPerson(object)) return "Talk";
+                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
             }
             public get downAction(): DirectionAction
             {
                 const object = this.mapView.helper.getTopObject({ x: this.position.x, y: this.position.y + 1 });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return "Examine";
-                if (Game.World.isPerson(object)) return "Talk";
+                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
             }
             public get leftAction(): DirectionAction
             {
                 const object = this.mapView.helper.getTopObject({ x: this.position.x - 1, y: this.position.y });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return "Examine";
-                if (Game.World.isPerson(object)) return "Talk";
+                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
             }
             public get rightAction(): DirectionAction
             {
                 const object = this.mapView.helper.getTopObject({ x: this.position.x + 1, y: this.position.y });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return "Examine";
-                if (Game.World.isPerson(object)) return "Talk";
+                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
             }
         }(this);
@@ -205,10 +201,10 @@ namespace Views.World
             if (object)
             {   // interact with object
                 this.stopAutoMove();
-                if ("tale" in object)
+                if (Game.World.isInteractive(object))
                 {
                     const tale = object.tale.startsWith("/") ? object.tale : { link: this.map.link, text: object.tale };
-                    Game.Story.show(tale, Game.World.isInteractive(object) ? "Examine" : "Talk", true);
+                    Game.Story.show(tale, object.action ?? "Examine", true);
                 }
                 return;
             }

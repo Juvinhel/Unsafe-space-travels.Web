@@ -56,16 +56,6 @@ namespace Game.World
     {
         type: "Interactive";
         tale: string;
-    };
-
-    export function isPerson(o: Obj): o is Person
-    {
-        return o.type == "Person";
-    }
-
-    export type Person = Object &
-    {
-        type: "Person";
-        tale: string;
+        action?: "Examine" | "Talk";
     };
 }

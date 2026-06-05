@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="2026.05.29" class="Map" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="25">
+<map version="1.10" tiledversion="2026.05.29" class="Map" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="26">
  <properties>
   <property name="name" value="Prison Floor"/>
  </properties>
@@ -72,6 +72,7 @@ The bed looks quite comfortable despite beeing in an eerie place like this.
   <object id="15" name="medical-station" type="Interactive" gid="4" x="32" y="352" width="32" height="32">
    <properties>
     <property name="blocking" type="bool" value="false"/>
+    <property name="category" propertytype="InteractiveAction" value="Talk"/>
     <property name="tale" value="/tales/PrisonFloor/Processing/MedicalStation.md"/>
    </properties>
   </object>
