@@ -132,7 +132,7 @@ namespace Game.Story
         if (typeof tale === "string") tale = await get(tale);
         const article = await render(tale);
 
-        title = article.querySelector("title")?.innerText ?? title ?? "";
+        title = article.querySelector("title")?.innerText ?? title;
         Views.Story.ShowStoryDialog(article, title, allowClose);
     }
 

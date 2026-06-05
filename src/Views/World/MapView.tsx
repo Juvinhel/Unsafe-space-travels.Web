@@ -208,7 +208,7 @@ namespace Views.World
                 if ("tale" in object)
                 {
                     const tale = object.tale.startsWith("/") ? object.tale : { link: this.map.link, text: object.tale };
-                    Game.Story.show(tale, null, true);
+                    Game.Story.show(tale, Game.World.isInteractive(object) ? "Examine" : "Talk", true);
                 }
                 return;
             }
@@ -219,7 +219,7 @@ namespace Views.World
                 {
                     this.stopAutoMove();
                     const tale = event.tale.startsWith("/") ? event.tale : { link: this.map.link, text: event.tale };
-                    Game.Story.show(tale, null, false);
+                    Game.Story.show(tale, "Event", false);
                 }
 
             const encounters = this.helper.getEncounters(this.playerPosition);

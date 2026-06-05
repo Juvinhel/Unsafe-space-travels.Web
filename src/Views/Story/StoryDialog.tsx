@@ -6,7 +6,7 @@ namespace Views.Story
         Game.World.movementAllowed(false);
         if (containerDialog)
         {
-            containerDialog.title = title ?? "";
+            if (title != null) containerDialog.title = title;
             if (allowClose != null) containerDialog.allowClose = allowClose;
             containerDialog.clearChildren();
             containerDialog.append(element);
