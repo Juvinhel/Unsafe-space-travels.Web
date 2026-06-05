@@ -1,5 +1,7 @@
 namespace Game.Battle
 {
+    export const knownSkills: { [name: string]: new (...args: any[]) => Skill; } = {};
+
     export interface Skill extends Action
     {
         constructor: Function;

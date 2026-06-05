@@ -1,4 +1,5 @@
 {
+    "@type": "Character",
     "name": "Nina",
     "body": {
         "feminity": 75,

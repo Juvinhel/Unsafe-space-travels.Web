@@ -1,8 +1,12 @@
+///<reference  path="Serializer.ts" /> 
 namespace Game
 {
-    export type Character =
-        {
-            name: string;
-            body: Body.Body;
-        };
+    export const knownCharacters: { [name: string]: Character; } = {};
+
+    @Serializer.known()
+    export class Character
+    {
+        name: string;
+        body: Body.Body;
+    };
 }

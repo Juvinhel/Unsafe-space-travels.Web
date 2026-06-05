@@ -38,13 +38,31 @@ namespace Views
                 case "js":
                     //@ts-ignore
                     const imports = await import("/data/" + file);
-                    //console.log("imports", imports, "/data/" + file);
+                    for (const [key, value] of Object.entries(imports))
+                    {
+                        if (typeof (value) === "object")
+                        {
+                            if (value instanceof Game.Character)
+                                Game.knownCharacters[value.name] = value;
+                        }
+                        else if (typeof (value) === "function" && /^\s*class\s+/.test(value.toString()))
+                        {
+                            // check if skill
+                            //if (value.prototype instanceof Game.Battle.Skill)
+                            //{
+                            //
+                            //}
+                        }
+                    }
                     //TODO:
                     break;
                 case "json":
                     const text = await (await fetch("data/" + file)).text();
                     const object = Game.Serializer.deserialize(text, "JSON");
-                    //TODO:
+
+                    if (object instanceof Game.Character)
+                        Game.knownCharacters[object.name] = object;
+
                     break;
             }
             ++progress.value;

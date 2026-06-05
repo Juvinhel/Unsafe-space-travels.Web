@@ -105,7 +105,7 @@ namespace Game.Serializer
         }
         else if (typeof (obj) === "object")
         {
-            let entries = Object.entries(obj);
+            const entries = Object.entries(obj);
             if ("@type" in obj)
             {
                 const constructor = getConstructor(obj["@type"] as string);

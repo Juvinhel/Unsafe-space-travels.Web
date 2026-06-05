@@ -30,10 +30,10 @@ namespace Views.World
         private build()
         {
             return (<div id="move-pad-root">
-                <button id="move-pad-up" state="Move" onclick={ () => this.up() }></button>
-                <button id="move-pad-down" state="Move" onclick={ () => this.down() }></button>
-                <button id="move-pad-left" state="Move" onclick={ () => this.left() }></button>
-                <button id="move-pad-right" state="Move" onclick={ () => this.right() }></button>
+                <button id="move-pad-up" state="Move" onclick={ () => this.up() } />
+                <button id="move-pad-down" state="Move" onclick={ () => this.down() } />
+                <button id="move-pad-left" state="Move" onclick={ () => this.left() } />
+                <button id="move-pad-right" state="Move" onclick={ () => this.right() } />
             </div>);
         }
 
