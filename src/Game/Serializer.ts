@@ -1,13 +1,32 @@
-namespace Game.Data
+namespace Game.Serializer
 {
-    export type ConstructorFunction = new (...args: any[]) => any;
-    export const knownTypes: { [type: string]: any; } = {};
-    export const knownObjects: { [name: string]: any; } = {};
+    type ConstructorFunction = new (...args: any[]) => any;
+    const knownTypes: { [type: string]: any; } = {};
 
-    export function known(type: string)
+    export function known(namespace: string = null, name: string = null)
     {
+        if (!namespace)
+        {
+            const err = new Error("Cannot find source file.");
+            //@ts-ignore
+            Error.captureStackTrace(err);
+            const stackLines = err.stack.split("\n");
+            const lastLine = stackLines.last();
+            const match = lastLine.match(/(?<url>(?<protocol>https?):\/\/(?<host>[^\/]*)(?<path>[^:]*)):/);
+            const url = match.groups["url"];
+            if (!url.startsWith(document.location.toString())) throw err;
+
+            const relativeUrl = url.substring(document.location.toString().length).trimLeft("/");
+            let [directory, fileName] = relativeUrl.splitLast("/");
+            if (!fileName) directory = null;
+
+            namespace = directory?.replaceAll("/", ".");
+            if (namespace?.startsWith("data.")) namespace = namespace.substring("data.".length);
+        }
+
         return function (constructor: ConstructorFunction)
         {
+            const type = (namespace ? namespace + "." : "") + (name ?? constructor.name);
             constructor.prototype["@type"] = type;
             knownTypes[type] = constructor.prototype;
         };
@@ -99,21 +118,10 @@ namespace Game.Data
         }
         else
             return obj;
-    }
+    };
 
     export function clone<T>(data: T): T
     {
-        return deserialize(serialize(data)) as T;
-    }
-
-    export class DataError extends Error
-    {
-        constructor (message: string, argument: any)
-        {
-            super(message);
-            this.argument = argument;
-        }
-
-        public argument: any;
+        return deserialize(serialize(data, "JSON"), "JSON") as T;
     }
 }

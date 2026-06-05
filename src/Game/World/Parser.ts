@@ -67,16 +67,16 @@ namespace Game.World
                 objects.push({ ...properties, name, type, x, y, width, height });
             }
 
-            return {
-                link,
-                name,
-                width,
-                height,
-                tilewidth,
-                tileheight,
-                ground,
-                objects,
-            };
+            const map = new Map();
+            map.link = link;
+            map.name = name;
+            map.width = width;
+            map.height = height;
+            map.tilewidth = tilewidth;
+            map.tileheight = tileheight;
+            map.ground = ground;
+            map.objects = objects;
+            return map;
         }
 
         /* private */ getLayer(element: Element): number[][]

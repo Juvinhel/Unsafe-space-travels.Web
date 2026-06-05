@@ -26,7 +26,7 @@ namespace Game.World
 
     async function get(link: string): Promise<Map>
     {
-        const ret = Game.Data.clone(knownMaps[link]);
+        const ret = Serializer.clone(knownMaps[link]);
 
         if (link in Game.data.maps)
             ret.objects = Game.data.maps[link].objects;

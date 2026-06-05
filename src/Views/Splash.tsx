@@ -33,12 +33,18 @@ namespace Views
         for (const file in data.files)
         {
             const [fileName, extension] = file.trimChar("/").split("/").last().splitLast(".");
-            const text = await (await fetch("data/" + file)).text();
             switch (extension?.toLowerCase())
             {
-                case "js": eval(text); break;
+                case "js":
+                    //@ts-ignore
+                    const imports = await import("/data/" + file);
+                    //console.log("imports", imports, "/data/" + file);
+                    //TODO:
+                    break;
                 case "json":
-                    Game.Data.knownObjects[fileName] = Game.Data.deserialize(text, "JSON");
+                    const text = await (await fetch("data/" + file)).text();
+                    const object = Game.Serializer.deserialize(text, "JSON");
+                    //TODO:
                     break;
             }
             ++progress.value;

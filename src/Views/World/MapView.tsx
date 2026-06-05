@@ -32,7 +32,6 @@ namespace Views.World
         public load(map: Game.World.Map, playerPosition: Game.World.Point)
         {
             this.map = map;
-            this.helper = new Game.World.MapHelper(this.map);
             this.playerPosition = playerPosition;
 
             this.gridDiv.style.setProperty("--tile-width", this.map.tilewidth + "px");
@@ -53,7 +52,6 @@ namespace Views.World
         public unload()
         {
             this.map = null;
-            this.helper = null;
             this.playerPosition = null;
             this.gridDiv.clearChildren();
             this.loaded = false;
@@ -61,7 +59,6 @@ namespace Views.World
 
         public loaded: boolean = false;
         public map: Game.World.Map;
-        public helper: Game.World.MapHelper;
         public playerPosition: Game.World.Point;
 
         connectedCallback()
@@ -143,35 +140,35 @@ namespace Views.World
                 this.mapView.enterPosition(p);
             }
 
-            public get canUp(): boolean { return this.mapView.helper.isPassable({ x: this.position.x, y: this.position.y - 1 }); }
-            public get canDown(): boolean { return this.mapView.helper.isPassable({ x: this.position.x, y: this.position.y + 1 }); }
-            public get canLeft(): boolean { return this.mapView.helper.isPassable({ x: this.position.x - 1, y: this.position.y }); }
-            public get canRight(): boolean { return this.mapView.helper.isPassable({ x: this.position.x + 1, y: this.position.y }); }
+            public get canUp(): boolean { return this.mapView.map.isPassable({ x: this.position.x, y: this.position.y - 1 }); }
+            public get canDown(): boolean { return this.mapView.map.isPassable({ x: this.position.x, y: this.position.y + 1 }); }
+            public get canLeft(): boolean { return this.mapView.map.isPassable({ x: this.position.x - 1, y: this.position.y }); }
+            public get canRight(): boolean { return this.mapView.map.isPassable({ x: this.position.x + 1, y: this.position.y }); }
 
             public get upAction(): DirectionAction
             {
-                const object = this.mapView.helper.getTopObject({ x: this.position.x, y: this.position.y - 1 });
+                const object = this.mapView.map.getTopObject({ x: this.position.x, y: this.position.y - 1 });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
             }
             public get downAction(): DirectionAction
             {
-                const object = this.mapView.helper.getTopObject({ x: this.position.x, y: this.position.y + 1 });
+                const object = this.mapView.map.getTopObject({ x: this.position.x, y: this.position.y + 1 });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
             }
             public get leftAction(): DirectionAction
             {
-                const object = this.mapView.helper.getTopObject({ x: this.position.x - 1, y: this.position.y });
+                const object = this.mapView.map.getTopObject({ x: this.position.x - 1, y: this.position.y });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
             }
             public get rightAction(): DirectionAction
             {
-                const object = this.mapView.helper.getTopObject({ x: this.position.x + 1, y: this.position.y });
+                const object = this.mapView.map.getTopObject({ x: this.position.x + 1, y: this.position.y });
                 if (!object) return "Move";
                 if (Game.World.isInteractive(object)) return object.action ?? "Examine";
                 return "Move";
@@ -180,7 +177,7 @@ namespace Views.World
 
         private enterPosition(p: Game.World.Point): boolean
         {
-            const object = this.helper.getTopObject(p);
+            const object = this.map.getTopObject(p);
             if (!object || !object.blocking)
             {   // can enter new position
                 this.playerPosition = p;
@@ -190,7 +187,7 @@ namespace Views.World
                 this.playerDiv.style.gridRow = (this.playerPosition.y + 1).toString();
                 this.scrollToPosition(this.playerPosition);
 
-                const ambients = this.helper.getAmbients(this.playerPosition);
+                const ambients = this.map.getAmbients(this.playerPosition);
                 const tales = ambients.map(x => x.tale.startsWith("/") ? x.tale : { link: this.map.link, text: x.tale });
                 Game.Story.showAmbient(...tales);
 
@@ -209,7 +206,7 @@ namespace Views.World
                 return;
             }
 
-            const events = this.helper.getEvents(this.playerPosition);
+            const events = this.map.getEvents(this.playerPosition);
             for (const event of events)
                 if (event.probability && Math.random() < event.probability)
                 {
@@ -218,7 +215,7 @@ namespace Views.World
                     Game.Story.show(tale, "Event", false);
                 }
 
-            const encounters = this.helper.getEncounters(this.playerPosition);
+            const encounters = this.map.getEncounters(this.playerPosition);
             for (const encounter of encounters)
                 if (encounter.probability && Math.random() < encounter.probability)
                 {
@@ -268,7 +265,7 @@ namespace Views.World
             this.clearAutoMove();
 
             const from = this.player.position;
-            if (!this.helper.isPassable(to)) return;
+            if (!this.map.isPassable(to)) return;
 
             const astar = new Game.World.AStar(this.map);
             const path = astar.calculatePath(from, to);

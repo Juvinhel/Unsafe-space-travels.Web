@@ -1,13 +1,47 @@
 namespace Game.World
 {
-    export type Map = Size & {
-        link: string;
-        name: string;
-        tilewidth: number;
-        tileheight: number;
+    @Serializer.known()
+    export class Map implements Size
+    {
+        public link: string;
+        public name: string;
+        public tilewidth: number;
+        public tileheight: number;
+        public width: number;
+        public height: number;
 
-        ground: Ground[][];
-        objects: Obj[];
+        public ground: Ground[][];
+        public objects: Obj[];
+
+        public isPassable(p: Point): boolean
+        {
+            if (p.x < 0) return false;
+            if (p.y < 0) return false;
+            if (p.x >= this.width) return false;
+            if (p.y >= this.height) return false;
+            if (this.ground[p.y][p.x] != "Passable") return false;
+            return true;
+        }
+
+        public getTopObject(p: Point, includeHidden: boolean = false): Object
+        {
+            return this.objects.filter(x => isObject(x) && contains(x, p) && (!x.hidden || includeHidden)).first() as Object;
+        }
+
+        public getAmbients(p: Point): Ambient[]
+        {
+            return this.objects.filter(x => Game.World.isAmbient(x) && Game.World.contains(x, p)) as Ambient[];
+        }
+
+        public getEvents(p: Point): Event[]
+        {
+            return this.objects.filter(x => isEvent(x) && contains(x, p)) as Event[];
+        }
+
+        public getEncounters(p: Point): Encounter[]
+        {
+            return this.objects.filter(x => isEncounter(x) && contains(x, p)) as Encounter[];
+        }
     };
 
     export type Tileset = {

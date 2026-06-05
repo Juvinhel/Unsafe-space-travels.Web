@@ -1,5 +1,5 @@
-@Game.Data.known("Items.Quest.UnknownAmpoules")
-class UnknownAmpoules implements Game.Inventory.Item
+@Game.Serializer.known()
+export class UnknownAmpoules implements Game.Inventory.Item
 {
     public icon = "img/icons/inventory/items/quest/unknown-ampoules.svg";
     public name = "Unknown Ampoules";

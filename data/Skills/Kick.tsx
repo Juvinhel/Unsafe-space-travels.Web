@@ -1,5 +1,5 @@
-@Game.Data.known("Skills.Kick")
-class Kick implements Game.Battle.Skill
+@Game.Serializer.known()
+export class Kick implements Game.Battle.Skill
 {
     public name = "Kick";
     public icon = "img/icons/battle/skills/kick.svg";

@@ -11,7 +11,7 @@ namespace Game.Body
         color: string,
     }
 
-    @Data.known("ProstheticEyes")
+    @Serializer.known()
     export class ProstheticEyes implements Eyes
     {
         constructor (color: string)

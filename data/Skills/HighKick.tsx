@@ -1,5 +1,5 @@
-@Game.Data.known("Skills.HighKick")
-class HighKick implements Game.Battle.Skill
+@Game.Serializer.known()
+export class HighKick implements Game.Battle.Skill
 {
     public name = "High Kick";
     public icon = "img/icons/battle/skills/high-kick.svg";
@@ -12,7 +12,7 @@ class HighKick implements Game.Battle.Skill
     public category = "attack" as const;
     public available(state: Game.Battle.State): boolean
     {
-        if (Game.Data.getType(state.selfActions.last()) == "Skills.Kick") return true;
+        if (Game.Serializer.getType(state.selfActions.last()) == "Skills.Kick") return true;
         return false;
     }
     public activationText(state: Game.Battle.State): Node

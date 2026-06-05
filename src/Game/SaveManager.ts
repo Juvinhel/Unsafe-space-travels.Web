@@ -58,14 +58,14 @@ namespace Game
 
         async save(slot: number, saveState: SaveState)
         {
-            const text = Data.serialize(saveState);
+            const text = Game.Serializer.serialize(saveState);
             localStorage.setItem(this.prefix + slot, text);
         }
 
         async load(slot: number): Promise<SaveState>
         {
             const text = localStorage.getItem(this.prefix + slot);
-            return Data.deserialize(text);
+            return Game.Serializer.deserialize(text);
         }
 
         async delete(slot: number)
@@ -104,12 +104,12 @@ namespace Game
 
         async save(slot: number, saveState: SaveState)
         {
-            await Interop.Bridge.SaveSaveFile(slot.toFixed(), Data.serialize(saveState));
+            await Interop.Bridge.SaveSaveFile(slot.toFixed(), Game.Serializer.serialize(saveState));
         }
 
         async load(slot: number): Promise<SaveState>
         {
-            return Data.deserialize(await Interop.Bridge.LoadSaveFile(slot.toFixed()));
+            return Game.Serializer.deserialize(await Interop.Bridge.LoadSaveFile(slot.toFixed()));
         }
 
         async delete(slot: number)

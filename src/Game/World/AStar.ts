@@ -5,11 +5,9 @@ namespace Game.World
         constructor (map: Map)
         {
             this.map = map;
-            this.helper = new MapHelper(this.map);
         }
 
         public readonly map: Map;
-        private helper: MapHelper;
 
         public calculatePath(from: Point, to: Point): Point[]
         {
@@ -33,7 +31,7 @@ namespace Game.World
                         return this.getPath(newNode);
 
                 for (let i = newNodes.length - 1; i >= 0; --i)
-                    if (!this.helper.isPassable(newNodes[i]))
+                    if (!this.map.isPassable(newNodes[i]))
                         newNodes.removeAt(i);
 
                 for (let i = newNodes.length - 1; i >= 0; --i)

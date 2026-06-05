@@ -1,4 +1,4 @@
-Game.Data.knownObjects["Nina2"] = {
+export const nina2 = {
     name: "Nina",
     body: {
         feminity: 75,

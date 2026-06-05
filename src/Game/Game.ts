@@ -10,7 +10,7 @@ namespace Game
         Game.sessionStart = new Date();
         Game.playTime = 0;
 
-        Game.data = Data.clone(Game.defaultData);
+        Game.data = Serializer.clone(Game.defaultData);
 
         Game.Story.showAmbient("/tales/Game.md");
     }

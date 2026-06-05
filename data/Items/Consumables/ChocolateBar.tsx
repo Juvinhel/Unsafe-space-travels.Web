@@ -1,5 +1,5 @@
-@Game.Data.known("Items.Consumables.ChocolateBar")
-class ChocolateBar implements Game.Inventory.Consumable
+@Game.Serializer.known()
+export class ChocolateBar implements Game.Inventory.Consumable
 {
     public get name() { return "Chocolate bar"; }
     public get icon() { return "/img/icons/inventory/items/consumables/chocolate-bar.svg"; }

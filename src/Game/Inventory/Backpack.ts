@@ -9,13 +9,13 @@ namespace Game.Inventory
 
     export function isInQuickSlot(item: string | Item): boolean
     {
-        const itemName = typeof item === "string" ? item : Data.getType(item);
+        const itemName = typeof item === "string" ? item : Game.Serializer.getType(item);
         return Game.data.player.backpack.quickSlots.includes(itemName);
     }
 
     export function equipItem(item: string | Item): boolean
     {
-        const itemName = typeof item === "string" ? item : Data.getType(item);
+        const itemName = typeof item === "string" ? item : Game.Serializer.getType(item);
         if (isInQuickSlot(itemName)) return false;
 
         for (let i = 0; i < Game.data.player.backpack.quickSlots.length; ++i)
@@ -29,7 +29,7 @@ namespace Game.Inventory
 
     export function unequipItem(item: string | Item): boolean
     {
-        const itemName = typeof item === "string" ? item : Data.getType(item);
+        const itemName = typeof item === "string" ? item : Game.Serializer.getType(item);
         for (let i = 0; i < Game.data.player.backpack.quickSlots.length; ++i)
             if (Game.data.player.backpack.quickSlots[i] == itemName)
             {
@@ -43,7 +43,7 @@ namespace Game.Inventory
     {
         public add(item: string | Item, quantity?: number)
         {
-            item = typeof item === "string" ? Data.create(item) as Item : item;
+            item = typeof item === "string" ? Game.Serializer.create(item) as Item : item;
 
             if ("quantity" in item)
             {
@@ -65,7 +65,7 @@ namespace Game.Inventory
 
         public remove(item: string | Item, quantity: number = null): boolean
         {
-            item = typeof item === "string" ? Data.create(item) as Item : item;
+            item = typeof item === "string" ? Game.Serializer.create(item) as Item : item;
             if ("quantity" in item)
             {
                 const inventoryItem = Game.data.player.backpack.items.first(x => x.constructor == item.constructor);
