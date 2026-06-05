@@ -11,7 +11,7 @@ namespace Game.World
         public height: number;
 
         public ground: Ground[][];
-        public layers: Layer[][];
+        public layers: Layer[];
         public objects: Obj[];
 
         public isPassable(p: Point): boolean

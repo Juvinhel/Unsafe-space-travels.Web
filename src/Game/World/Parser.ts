@@ -64,7 +64,8 @@ namespace Game.World
                     {
                         const gid = tiles[y][x];
                         const img = mergedTiles[gid];
-
+                        const cell: Cell = { link: img };
+                        row.push(cell);
                     }
                     layer.cells.push(row);
                 }
@@ -96,6 +97,7 @@ namespace Game.World
             map.tileheight = tileheight;
             map.ground = ground;
             map.objects = objects;
+            map.layers = layers;
             return map;
         }
 

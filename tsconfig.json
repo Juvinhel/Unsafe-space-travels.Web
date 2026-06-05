@@ -11,8 +11,10 @@
         "outFile": "dist/app.js",
         "allowJs": true,
         "strict": false,
+        "alwaysStrict": false,
         "experimentalDecorators": true,
-        "declaration": true
+        "declaration": true,
+        "ignoreDeprecations": "6.0",
     },
     "include": [
         "node_modules/@peach/helper/src/**/*",

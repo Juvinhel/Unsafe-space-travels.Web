@@ -40,9 +40,11 @@ namespace Views.World
             this.gridDiv.style.setProperty("--rows-count", this.map.height.toFixed());
 
             this.gridDiv.clearChildren();
-            this.gridDiv.append(this.playerDiv = <div class="player" style={ { gridColumn: 1, gridRow: 1 } } /> as HTMLDivElement);
-            this.gridDiv.append(...this.buildTiles());
-            this.gridDiv.append(...this.buildObjects());
+            for (const layer of this.map.layers)
+                this.gridDiv.append(<div class={ ["layer"] }>{ this.buildLayer(layer) }</div>);
+            this.gridDiv.append(<div class={ ["layer", "ground-layer"] }>{ this.buildGround() }</div>);
+            this.gridDiv.append(<div class={ ["layer", "player-layer"] }>{ this.playerDiv = <div class="player" style={ { gridColumn: 1, gridRow: 1 } } /> as HTMLDivElement }</div>);
+            this.gridDiv.append(<div class={ ["layer", "object-layer"] }>{ this.buildObjects() }</div>);
 
             this.player.teleport(this.playerPosition);
 
@@ -65,7 +67,7 @@ namespace Views.World
         {
         }
 
-        private * buildTiles()
+        private * buildGround()
         {
             for (let y = 0; y < this.map.height; y++)
                 for (let x = 0; x < this.map.width; x++)
@@ -75,7 +77,22 @@ namespace Views.World
                         gridColumn: x + 1,
                         gridRow: y + 1,
                     } as UI.Style;
-                    yield <div class={ ["tile", ground == "Passable" ? "passable" : "impassable"] } x-attribute={ x } y-attribute={ y } style={ style } onclick={ this.tileClick.bind(this) } />;
+                    yield <div class={ ["ground", ground == "Passable" ? "passable" : "impassable"] } x-attribute={ x } y-attribute={ y } style={ style } onclick={ this.tileClick.bind(this) } />;
+                }
+        }
+
+        private * buildLayer(layer: Game.World.Layer)
+        {
+            for (let y = 0; y < this.map.height; y++)
+                for (let x = 0; x < this.map.width; x++)
+                {
+                    const cell = layer.cells[y][x];
+                    const style = {
+                        gridColumn: x + 1,
+                        gridRow: y + 1,
+                        backgroundImage: "url('" + cell.link + "')"
+                    } as UI.Style;
+                    yield <div class={ ["tile"] } x-attribute={ x } y-attribute={ y } style={ style } onclick={ this.tileClick.bind(this) } />;
                 }
         }
 
@@ -94,13 +111,13 @@ namespace Views.World
 
         private scrollToPosition(p: Game.World.Point)
         {
-            const tile = this.getTile(p);
-            tile.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+            const ground = this.getGround(p);
+            ground.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
         }
 
-        private getTile(p: Game.World.Point)  
+        private getGround(p: Game.World.Point)  
         {
-            return this.gridDiv.querySelector(".tile[x='" + p.x + "'][y='" + p.y + "']");
+            return this.gridDiv.querySelector(".ground[x='" + p.x + "'][y='" + p.y + "']");
         }
 
         public player = new class Player
@@ -273,15 +290,15 @@ namespace Views.World
 
             for (const point of path)
             {
-                const tile = this.gridDiv.querySelector(".tile[x='" + point.x + "'][y='" + point.y + "']");
-                tile.classList.add("auto-move");
+                const ground = this.getGround(point);
+                ground.classList.add("auto-move");
             }
         }
 
         private clearAutoMove()
         {
-            for (const tile of this.gridDiv.querySelectorAll(".tile"))
-                tile.classList.remove("auto-move");
+            for (const ground of this.gridDiv.querySelectorAll(".ground"))
+                ground.classList.remove("auto-move");
         }
 
         private autoMoveInterval: number;
@@ -299,28 +316,28 @@ namespace Views.World
                 return;
             }
 
-            const currentTile = this.gridDiv.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + this.playerPosition.y + "']");
-            if (!currentTile.classList.contains("auto-move"))
+            const playerGround = this.getGround(this.playerPosition);
+            if (!playerGround.classList.contains("auto-move"))
             {
                 this.stopAutoMove();
                 return;
             }
 
-            const upTile = this.gridDiv.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + (this.playerPosition.y - 1) + "']");
-            const downTile = this.gridDiv.querySelector(".tile[x='" + this.playerPosition.x + "'][y='" + (this.playerPosition.y + 1) + "']");
-            const leftTile = this.gridDiv.querySelector(".tile[x='" + (this.playerPosition.x - 1) + "'][y='" + this.playerPosition.y + "']");
-            const rightTile = this.gridDiv.querySelector(".tile[x='" + (this.playerPosition.x + 1) + "'][y='" + this.playerPosition.y + "']");
+            const upTile = this.getGround({ x: this.playerPosition.x, y: this.playerPosition.y - 1 });
+            const downTile = this.getGround({ x: this.playerPosition.x, y: this.playerPosition.y + 1 });
+            const leftTile = this.getGround({ x: this.playerPosition.x - 1, y: this.playerPosition.y });
+            const rightTile = this.getGround({ x: this.playerPosition.x + 1, y: this.playerPosition.y });
 
-            const nextTile = [upTile, downTile, leftTile, rightTile].filter(t => t && t.classList.contains("auto-move")).first();
-            if (!nextTile)
+            const nextGround = [upTile, downTile, leftTile, rightTile].filter(t => t && t.classList.contains("auto-move")).first();
+            if (!nextGround)
             {
                 this.stopAutoMove();
                 return;
             }
 
-            currentTile.classList.remove("auto-move");
-            const x = parseInt(nextTile.getAttribute("x"));
-            const y = parseInt(nextTile.getAttribute("y"));
+            playerGround.classList.remove("auto-move");
+            const x = parseInt(nextGround.getAttribute("x"));
+            const y = parseInt(nextGround.getAttribute("y"));
             this.player.goto({ x, y });
         }
 
