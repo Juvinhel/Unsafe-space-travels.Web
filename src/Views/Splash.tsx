@@ -17,6 +17,18 @@ namespace Views
     {
         const progress = splash.querySelector("progress");
 
+        // init library types
+        Game.Serializer.known()(FixedMatrix);
+        FixedMatrix["revive"] = (json: any) =>
+        {
+            const ret = new FixedMatrix(json.width, json.height);
+            let i = 0;
+            for (let y = 0; y < ret.height; ++y)
+                for (let x = 0; x < ret.width; ++x)
+                    ret.set(x, y, json.values[i++]);
+            return ret;
+        };
+
         const img = new RessourceDictionary("img", ["svg", "png"]);
         await img.initialize();
 

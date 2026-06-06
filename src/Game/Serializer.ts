@@ -109,6 +109,11 @@ namespace Game.Serializer
             if ("@type" in obj)
             {
                 const constructor = getConstructor(obj["@type"] as string);
+                if ("revive" in constructor)
+                {
+                    console.log("revive", constructor);
+                    return (constructor as any)["revive"](obj);
+                }
                 obj = new constructor();
             }
 

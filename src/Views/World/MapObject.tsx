@@ -32,7 +32,11 @@ namespace Views.World
         public set y(value: number) { this.setAttribute("y", value.toFixed(0)); }
 
         public get img(): string { return this.getAttribute("img"); }
-        public set img(value: string) { this.setAttribute("img", value); }
+        public set img(value: string)
+        {
+            if (value) this.setAttribute("img", value);
+            else this.removeAttribute("img");
+        }
 
         private internalType: string;
         public get type(): string { return this.internalType; }
@@ -50,7 +54,7 @@ namespace Views.World
             this.x = this.object.x;
             this.y = this.object.y;
             this.img = this.object.img;
-            this.type = this.object.type;
+            this.type = Game.Serializer.getType(this.object);
             this.hidden = !!this.object.hidden;
         }
     }

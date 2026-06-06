@@ -48,29 +48,16 @@ namespace Game.World
                 }
             }
 
-            const firstLayerElement = root.querySelector(":scope > layer");
-            const firstLayer = this.getLayer(firstLayerElement);
-            const ground: Ground[][] = firstLayer.map(x => x.map(x => (x == 0 ? "Impassable" : "Passable") as Ground));
+            const groundLayerElement = root.querySelector(":scope > layer");
+            const groundLayer = this.getLayer(groundLayerElement);
+            const ground = groundLayer.map<Ground>((x, y, v) => v == 0 ? "Impassable" : "Passable");
 
             const layers: Layer[] = [];
             for (const layerElement of root.querySelectorAll(":scope > layer"))
             {
                 const tiles = this.getLayer(layerElement);
-                const layer: Layer = { cells: [] };
-                for (let y = 0; y < tiles.length; ++y)
-                {
-                    const row: Cell[] = [];
-                    for (let x = 0; x < tiles[y].length; ++x)
-                    {
-                        const gid = tiles[y][x];
-                        const img = mergedTiles[gid];
-                        const cell: Cell = { link: img };
-                        row.push(cell);
-                    }
-                    layer.cells.push(row);
-                }
-
-                layers.push(layer);
+                const cells = tiles.map((x, y, t) => t > 0 ? { link: mergedTiles[t] } : null);
+                layers.push({ cells });
             }
 
             const objects: Obj[] = [];
@@ -85,7 +72,16 @@ namespace Game.World
                 const height = parseInt(objectElement.getAttribute("height")) / tileheight;
                 const gid = parseInt(objectElement.getAttribute("gid"));
                 if (!isNaN(gid)) properties["img"] = mergedTiles[gid];
-                objects.push({ ...properties, name, type, x, y, width, height });
+
+                const object = Serializer.create(type) as Obj;
+                if (name) object["name"] = name;
+                object.x = x;
+                object.y = y;
+                object.width = width;
+                object.height = height;
+                for (const [key, value] of globalThis.Object.entries(properties))
+                    object[key] = value;
+                objects.push(object);
             }
 
             const map = new Map();
@@ -101,7 +97,7 @@ namespace Game.World
             return map;
         }
 
-        /* private */ getLayer(element: Element): number[][]
+        /* private */ getLayer(element: Element): FixedMatrix<number>
         {
             const data = element.querySelector(":scope > data");
             const text = data.textContent.trim();
@@ -117,7 +113,7 @@ namespace Game.World
                 ret.push(row);
             }
 
-            return ret;
+            return new FixedMatrix<number>(ret[0].length, ret.length, ret);
         }
 
         /* private */ async loadTileset(url: string): Promise<Tileset>

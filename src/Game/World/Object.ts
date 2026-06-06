@@ -1,61 +1,45 @@
 namespace Game.World
 {
-    export function isAmbient(o: Obj): o is Ambient
+    @Serializer.known()
+    export class Ambient implements Obj
     {
-        return o.type == "Ambient";
-    }
-
-    export type Ambient = Obj &
-    {
-        type: "Ambient";
         tale: string;
-    };
-
-    export function isEvent(o: Obj): o is Event
-    {
-        return o.type == "Event";
+        x: number;
+        y: number;
+        width: number;
+        height: number;
     }
 
-    export type Event = Object &
+    @Serializer.known()
+    export class Object implements Obj
     {
-        type: "Event";
-        tale: string;
-        probability?: number;
-    };
-
-    export function isEncounter(o: Obj): o is Encounter
-    {
-        return o.type == "Encounter";
-    }
-
-    export type Encounter = Object &
-    {   //TODO:
-        type: "Event";
-        probability?: number;
-    };
-
-    export function isObject(o: Obj): o is Object
-    {
-        return "img" in o;
-    }
-
-    export type Object = Obj & {
-        type: string;
         img: string;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
         tale?: string;
         blocking?: boolean;
         hidden?: boolean;
-    };
-
-    export function isInteractive(o: Obj): o is Interactive
-    {
-        return o.type == "Interactive";
     }
 
-    export type Interactive = Object &
+    @Serializer.known()
+    export class Event extends Object
     {
-        type: "Interactive";
-        tale: string;
+        declare tale: string;
+        probability?: number;
+    }
+
+    @Serializer.known()
+    export class Encounter extends Object
+    {
+        probability?: number;
+    }
+
+    @Serializer.known()
+    export class Interactive extends Object
+    {
+        declare tale: string;
         action?: "Examine" | "Talk";
     };
 }

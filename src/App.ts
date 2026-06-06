@@ -19,9 +19,6 @@ const App = new (class App
         await UI.Navigator.navigate("left", Views.Info);
         Views.loadRight();
 
-        const eyes = Game.Serializer.clone(new Game.Body.ProstheticEyes("black"));
-        console.log("eyes", eyes);
-
         Game.start();
     }
 

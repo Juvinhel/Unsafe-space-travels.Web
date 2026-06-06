@@ -31,6 +31,7 @@ namespace Views.World
 
         public load(map: Game.World.Map, playerPosition: Game.World.Point)
         {
+            console.log("map", map);
             this.map = map;
             this.playerPosition = playerPosition;
 
@@ -69,36 +70,33 @@ namespace Views.World
 
         private * buildGround()
         {
-            for (let y = 0; y < this.map.height; y++)
-                for (let x = 0; x < this.map.width; x++)
-                {
-                    const ground = this.map.ground[y][x];
-                    const style = {
-                        gridColumn: x + 1,
-                        gridRow: y + 1,
-                    } as UI.Style;
-                    yield <div class={ ["ground", ground == "Passable" ? "passable" : "impassable"] } x-attribute={ x } y-attribute={ y } style={ style } onclick={ this.tileClick.bind(this) } />;
-                }
+            for (const { x, y, value } of this.map.ground)
+            {
+                const style = {
+                    gridColumn: x + 1,
+                    gridRow: y + 1,
+                } as UI.Style;
+                yield <div class={ ["ground", value == "Passable" ? "passable" : "impassable"] } x-attribute={ x } y-attribute={ y } style={ style } onclick={ this.groundClick.bind(this) } />;
+            }
         }
 
         private * buildLayer(layer: Game.World.Layer)
         {
-            for (let y = 0; y < this.map.height; y++)
-                for (let x = 0; x < this.map.width; x++)
+            for (const { x, y, value } of layer.cells)
+                if (value)
                 {
-                    const cell = layer.cells[y][x];
                     const style = {
                         gridColumn: x + 1,
                         gridRow: y + 1,
-                        backgroundImage: "url('" + cell.link + "')"
+                        backgroundImage: "url('" + value.link + "')",
                     } as UI.Style;
-                    yield <div class={ ["tile"] } x-attribute={ x } y-attribute={ y } style={ style } onclick={ this.tileClick.bind(this) } />;
+                    yield <div class={ ["tile"] } x-attribute={ x } y-attribute={ y } style={ style } />;
                 }
         }
 
         private * buildObjects()
         {
-            for (const object of this.map.objects.filter(x => Game.World.isObject(x)))
+            for (const object of this.map.objects.filter(x => x instanceof Game.World.Object))
                 yield new MapObject(object);
         }
 
@@ -166,28 +164,28 @@ namespace Views.World
             {
                 const object = this.mapView.map.getTopObject({ x: this.position.x, y: this.position.y - 1 });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
+                if (object instanceof Game.World.Interactive) return object.action ?? "Examine";
                 return "Move";
             }
             public get downAction(): DirectionAction
             {
                 const object = this.mapView.map.getTopObject({ x: this.position.x, y: this.position.y + 1 });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
+                if (object instanceof Game.World.Interactive) return object.action ?? "Examine";
                 return "Move";
             }
             public get leftAction(): DirectionAction
             {
                 const object = this.mapView.map.getTopObject({ x: this.position.x - 1, y: this.position.y });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
+                if (object instanceof Game.World.Interactive) return object.action ?? "Examine";
                 return "Move";
             }
             public get rightAction(): DirectionAction
             {
                 const object = this.mapView.map.getTopObject({ x: this.position.x + 1, y: this.position.y });
                 if (!object) return "Move";
-                if (Game.World.isInteractive(object)) return object.action ?? "Examine";
+                if (object instanceof Game.World.Interactive) return object.action ?? "Examine";
                 return "Move";
             }
         }(this);
@@ -215,7 +213,7 @@ namespace Views.World
             if (object)
             {   // interact with object
                 this.stopAutoMove();
-                if (Game.World.isInteractive(object))
+                if (object instanceof Game.World.Interactive)
                 {
                     const tale = object.tale.startsWith("/") ? object.tale : { link: this.map.link, text: object.tale };
                     Game.Story.show(tale, object.action ?? "Examine", true);
@@ -248,7 +246,7 @@ namespace Views.World
                 e.preventDefault();
         }
 
-        private tileClick(e: Event)
+        private groundClick(e: Event)
         {
             const tile = e.currentTarget as HTMLDivElement;
             const x = parseInt(tile.getAttribute("x"));

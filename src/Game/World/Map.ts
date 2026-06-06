@@ -10,7 +10,7 @@ namespace Game.World
         public width: number;
         public height: number;
 
-        public ground: Ground[][];
+        public ground: FixedMatrix<Ground>;
         public layers: Layer[];
         public objects: Obj[];
 
@@ -20,28 +20,28 @@ namespace Game.World
             if (p.y < 0) return false;
             if (p.x >= this.width) return false;
             if (p.y >= this.height) return false;
-            if (this.ground[p.y][p.x] != "Passable") return false;
+            if (this.ground.get(p.x, p.y) != "Passable") return false;
             return true;
         }
 
         public getTopObject(p: Point, includeHidden: boolean = false): Object
         {
-            return this.objects.filter(x => isObject(x) && contains(x, p) && (!x.hidden || includeHidden)).first() as Object;
+            return this.objects.filter(x => x instanceof Object && contains(x, p) && (!x.hidden || includeHidden)).first() as Object;
         }
 
         public getAmbients(p: Point): Ambient[]
         {
-            return this.objects.filter(x => Game.World.isAmbient(x) && Game.World.contains(x, p)) as Ambient[];
+            return this.objects.filter(x => x instanceof Ambient && Game.World.contains(x, p)) as Ambient[];
         }
 
         public getEvents(p: Point): Event[]
         {
-            return this.objects.filter(x => isEvent(x) && contains(x, p)) as Event[];
+            return this.objects.filter(x => x instanceof Event && contains(x, p)) as Event[];
         }
 
         public getEncounters(p: Point): Encounter[]
         {
-            return this.objects.filter(x => isEncounter(x) && contains(x, p)) as Encounter[];
+            return this.objects.filter(x => x instanceof Encounter && contains(x, p)) as Encounter[];
         }
     };
 
@@ -56,7 +56,7 @@ namespace Game.World
     };
 
     export type Layer = {
-        cells: Cell[][];
+        cells: FixedMatrix<Cell>;
     };
 
     export type Cell = {
