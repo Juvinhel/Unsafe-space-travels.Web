@@ -12,7 +12,10 @@ namespace Game.World
 
         public ground: FixedMatrix<Ground>;
         public layers: Layer[];
-        public objects: Obj[];
+        public get objects(): Obj[]
+        {
+            return this.layers.filter(x => "objects" in x).mapMany(x => x.objects as Obj[]);
+        }
 
         public isPassable(p: Point): boolean
         {
@@ -59,12 +62,16 @@ namespace Game.World
         [name: string]: any;
     };
 
-    export type Layer = {};
+    export type Layer = { name?: string; };
 
-    export type CellLayer = {
+    export type PlayerLayer = Layer & { name: "Player"; };
+
+    export type GroundLayer = Layer & { name: "Ground"; };
+
+    export type CellLayer = Layer & {
         cells: FixedMatrix<Cell>;
     };
-    export type ObjectLayer = {
+    export type ObjectLayer = Layer & {
         objects: Obj[];
     };
 

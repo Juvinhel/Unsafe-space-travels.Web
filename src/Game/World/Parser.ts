@@ -55,21 +55,20 @@ namespace Game.World
             const layers: Layer[] = [];
             for (const layerElement of root.querySelectorAll(":scope > layer, :scope > objectgroup"))
             {
-                switch (layerElement.tagName)
+                const name = layerElement.getAttribute("name");
+                if (name == "Player") layers.push({ name: "Player" });
+                else if (name == "Ground") layers.push({ name: "Ground" });
+                else switch (layerElement.tagName)
                 {
                     case "layer": //cell layer
-                        const tiles = this.getLayer(layerElement);
-                        const cells = tiles.map((x, y, t) => t > 0 ? { link: mergedTiles[t] } : null);
-                        layers.push({ cells });
+                        layers.push(this.parseCellLayer(layerElement, mergedTiles));
                         break;
                     case "objectgroup": //object layer
                         layers.push(this.parseObjectLayer(layerElement, tileWidth, tileHeight, mergedTiles));
                         break;
-                    default: console.log("la", layerElement.tagName); break;
                 }
             }
 
-            const objects: Obj[] = layers.filter(x => "objects" in x).mapMany(x => x.objects as Obj[]);
             const map = new Map();
             map.link = link;
             map.name = name;
@@ -78,7 +77,6 @@ namespace Game.World
             map.tileWidth = tileWidth;
             map.tileHeight = tileHeight;
             map.ground = ground;
-            map.objects = objects;
             map.layers = layers;
             return map;
         }
@@ -102,8 +100,17 @@ namespace Game.World
             return new FixedMatrix<number>(ret[0].length, ret.length, ret);
         }
 
+        /* private */ parseCellLayer(layerElement, mergedTiles: string[]): CellLayer
+        {
+            const name = layerElement.getAttribute("name");
+            const tiles = this.getLayer(layerElement);
+            const cells = tiles.map((x, y, t) => t > 0 ? { link: mergedTiles[t] } : null);
+            return { name, cells };
+        }
+
         /* private */ parseObjectLayer(objectGroupElement: Element, tileWidth: number, tileHeight: number, mergedTiles: string[]): ObjectLayer
         {
+            const name = objectGroupElement.getAttribute("name");
             const objects: Obj[] = [];
             for (const objectElement of objectGroupElement.querySelectorAll(":scope > object"))
             {
@@ -126,7 +133,7 @@ namespace Game.World
                 globalThis.Object.mutate(obj, properties);
                 objects.push(obj);
             }
-            return { objects };
+            return { name, objects };
         }
 
         /* private */ async loadTileset(url: string): Promise<Tileset>

@@ -28,10 +28,11 @@ namespace Game.World
     {
         const ret = Serializer.clone(knownMaps[link]);
 
-        if (link in Game.data.maps)
-            ret.objects = Game.data.maps[link].objects;
-        else
-            Game.data.maps[link] = { objects: ret.objects };
+        //if (link in Game.data.maps)
+        //    ret.objects = Game.data.maps[link].objects;
+        //else
+        //TODO: fix object storage
+        Game.data.maps[link] = { objects: ret.objects };
         //TODO: update old object data
 
         return ret;
@@ -52,7 +53,6 @@ namespace Game.World
 
     export function findObject(link: string, name: string): Obj
     {
-        //link = refineLink(link);
         if (link in Game.data.maps)
         {
             const map = Game.data.maps[link];

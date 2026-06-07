@@ -55,7 +55,7 @@ namespace Views.World
             this.y = this.object.y;
             this.img = this.object.img;
             this.type = Game.Serializer.tryGetType(this.object);
-            if ("hidden" in this.object) this.hidden = !!this.object.hidden;
+            this.hidden = !!this.object["hidden"];
         }
     }
 }

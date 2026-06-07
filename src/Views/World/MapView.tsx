@@ -31,7 +31,6 @@ namespace Views.World
 
         public load(map: Game.World.Map, playerPosition: Game.World.Point)
         {
-            console.log("map", map);
             this.map = map;
             this.playerPosition = playerPosition;
 
@@ -43,14 +42,15 @@ namespace Views.World
             this.gridDiv.clearChildren();
             for (const layer of this.map.layers)
             {
-                if ("cells" in layer)
+                if (layer.name == "Player")
+                    this.gridDiv.append(<div class={ ["layer", "player-layer"] }>{ this.playerDiv = <div class="player" style={ { gridColumn: 1, gridRow: 1 } } /> as HTMLDivElement }</div>);
+                else if (layer.name == "Ground")
+                    this.gridDiv.append(<div class={ ["layer", "ground-layer"] }>{ this.buildGround() }</div>);
+                else if ("cells" in layer)
                     this.gridDiv.append(<div class={ ["layer", "cell-layer"] }>{ this.buildCells(layer as Game.World.CellLayer) }</div>);
                 else if ("objects" in layer)
                     this.gridDiv.append(<div class={ ["layer", "object-layer"] }>{ this.buildObjects(layer as Game.World.ObjectLayer) }</div>);
-
             }
-            this.gridDiv.append(<div class={ ["layer", "ground-layer"] }>{ this.buildGround() }</div>);
-            this.gridDiv.append(<div class={ ["layer", "player-layer"] }>{ this.playerDiv = <div class="player" style={ { gridColumn: 1, gridRow: 1 } } /> as HTMLDivElement }</div>);
 
             this.player.teleport(this.playerPosition);
 
@@ -216,7 +216,6 @@ namespace Views.World
                 this.coordinatesSpan.innerText = this.playerPosition.x + ":" + this.playerPosition.y;
             }
 
-            console.log("object", object);
             if (object)
             {   // interact with object
                 this.stopAutoMove();
@@ -231,7 +230,6 @@ namespace Views.World
             const teleporter = this.map.getTeleporter(this.playerPosition);
             if (teleporter)
             {
-                console.log("teleporter", teleporter);
                 this.stopAutoMove();
                 if (teleporter.map) Game.World.goto(teleporter.map, teleporter.destination);
                 else this.player.teleport(teleporter.destination);
