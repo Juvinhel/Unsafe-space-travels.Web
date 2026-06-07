@@ -23,8 +23,8 @@ namespace Game.World
             const name = this.parseProperties(root)["name"] as string ?? fileName;
             const width = parseInt(root.getAttribute("width"));
             const height = parseInt(root.getAttribute("height"));
-            const tilewidth = parseInt(root.getAttribute("tilewidth"));
-            const tileheight = parseInt(root.getAttribute("tileheight"));
+            const tileWidth = parseInt(root.getAttribute("tilewidth"));
+            const tileHeight = parseInt(root.getAttribute("tileheight"));
 
             const mergedTiles: string[] = [];
             for (const tilesetElement of root.querySelectorAll(":scope > tileset"))
@@ -53,44 +53,30 @@ namespace Game.World
             const ground = groundLayer.map<Ground>((x, y, v) => v == 0 ? "Impassable" : "Passable");
 
             const layers: Layer[] = [];
-            for (const layerElement of root.querySelectorAll(":scope > layer"))
+            for (const layerElement of root.querySelectorAll(":scope > layer, :scope > objectgroup"))
             {
-                const tiles = this.getLayer(layerElement);
-                const cells = tiles.map((x, y, t) => t > 0 ? { link: mergedTiles[t] } : null);
-                layers.push({ cells });
+                switch (layerElement.tagName)
+                {
+                    case "layer": //cell layer
+                        const tiles = this.getLayer(layerElement);
+                        const cells = tiles.map((x, y, t) => t > 0 ? { link: mergedTiles[t] } : null);
+                        layers.push({ cells });
+                        break;
+                    case "objectgroup": //object layer
+                        layers.push(this.parseObjectLayer(layerElement, tileWidth, tileHeight, mergedTiles));
+                        break;
+                    default: console.log("la", layerElement.tagName); break;
+                }
             }
 
-            const objects: Obj[] = [];
-            for (const objectElement of root.querySelectorAll(":scope > objectgroup > object"))
-            {
-                const properties = this.parseProperties(objectElement);
-                const name = objectElement.getAttribute("name");
-                const type = objectElement.getAttribute("type");
-                const x = parseInt(objectElement.getAttribute("x")) / tilewidth;
-                const y = (parseInt(objectElement.getAttribute("y")) / tileheight);
-                const width = parseInt(objectElement.getAttribute("width")) / tilewidth;
-                const height = parseInt(objectElement.getAttribute("height")) / tileheight;
-                const gid = parseInt(objectElement.getAttribute("gid"));
-                if (!isNaN(gid)) properties["img"] = mergedTiles[gid];
-
-                const object = Serializer.create(type) as Obj;
-                if (name) object["name"] = name;
-                object.x = x;
-                object.y = y;
-                object.width = width;
-                object.height = height;
-                for (const [key, value] of globalThis.Object.entries(properties))
-                    object[key] = value;
-                objects.push(object);
-            }
-
+            const objects: Obj[] = layers.filter(x => "objects" in x).mapMany(x => x.objects as Obj[]);
             const map = new Map();
             map.link = link;
             map.name = name;
             map.width = width;
             map.height = height;
-            map.tilewidth = tilewidth;
-            map.tileheight = tileheight;
+            map.tileWidth = tileWidth;
+            map.tileHeight = tileHeight;
             map.ground = ground;
             map.objects = objects;
             map.layers = layers;
@@ -114,6 +100,33 @@ namespace Game.World
             }
 
             return new FixedMatrix<number>(ret[0].length, ret.length, ret);
+        }
+
+        /* private */ parseObjectLayer(objectGroupElement: Element, tileWidth: number, tileHeight: number, mergedTiles: string[]): ObjectLayer
+        {
+            const objects: Obj[] = [];
+            for (const objectElement of objectGroupElement.querySelectorAll(":scope > object"))
+            {
+                const properties = this.parseProperties(objectElement);
+                const name = objectElement.getAttribute("name");
+                const type = objectElement.getAttribute("type");
+                const x = parseInt(objectElement.getAttribute("x")) / tileWidth;
+                const y = parseInt(objectElement.getAttribute("y")) / tileHeight;
+                const width = parseInt(objectElement.getAttribute("width")) / tileWidth;
+                const height = parseInt(objectElement.getAttribute("height")) / tileHeight;
+                const gid = parseInt(objectElement.getAttribute("gid"));
+                if (!isNaN(gid)) properties["img"] = mergedTiles[gid];
+
+                const obj = (Serializer.isKnown(type) ? Serializer.create(type) : { type }) as Obj;
+                if (name) obj["name"] = name;
+                obj.x = x;
+                obj.y = y;
+                obj.width = width;
+                obj.height = height;
+                globalThis.Object.mutate(obj, properties);
+                objects.push(obj);
+            }
+            return { objects };
         }
 
         /* private */ async loadTileset(url: string): Promise<Tileset>
@@ -164,6 +177,20 @@ namespace Game.World
                     case "bool": value = value == "true"; break;
                     case "int": value = parseInt(value); break;
                     case "float": value = parseFloat(value); break;
+                    case "class":
+                        const type = propertyElement.getAttribute("propertytype");
+                        switch (type)
+                        {
+                            case "Point":
+                                value = { x: 0, y: 0 };
+                                globalThis.Object.mutate(value, this.parseProperties(propertyElement));
+                                break;
+                            default:
+                                value = Serializer.isKnown(type) ? Serializer.create(type) : { type };
+                                globalThis.Object.mutate(value, this.parseProperties(propertyElement));
+                                break;
+                        }
+                        break;
                 }
                 ret[name] = value;
             }

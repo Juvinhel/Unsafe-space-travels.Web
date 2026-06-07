@@ -5,8 +5,8 @@ namespace Game.World
     {
         public link: string;
         public name: string;
-        public tilewidth: number;
-        public tileheight: number;
+        public tileWidth: number;
+        public tileHeight: number;
         public width: number;
         public height: number;
 
@@ -33,6 +33,10 @@ namespace Game.World
         {
             return this.objects.filter(x => x instanceof Ambient && Game.World.contains(x, p)) as Ambient[];
         }
+        public getTeleporter(p: Point): Teleporter
+        {
+            return this.objects.filter(x => x instanceof Teleporter && contains(x, p)).first() as Teleporter;
+        }
 
         public getEvents(p: Point): Event[]
         {
@@ -55,8 +59,13 @@ namespace Game.World
         [name: string]: any;
     };
 
-    export type Layer = {
+    export type Layer = {};
+
+    export type CellLayer = {
         cells: FixedMatrix<Cell>;
+    };
+    export type ObjectLayer = {
+        objects: Obj[];
     };
 
     export type Cell = {
@@ -67,6 +76,7 @@ namespace Game.World
     export type Obj = Rect & {
         name?: string;
         type?: string;
+        img?: string;
     };
 
     export const GroundType = ["Default", "Passable", "Impassable"] as const;

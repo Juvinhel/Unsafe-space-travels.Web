@@ -35,17 +35,22 @@ namespace Views.World
             this.map = map;
             this.playerPosition = playerPosition;
 
-            this.gridDiv.style.setProperty("--tile-width", this.map.tilewidth + "px");
-            this.gridDiv.style.setProperty("--tile-height", this.map.tileheight + "px");
+            this.gridDiv.style.setProperty("--tile-width", this.map.tileWidth + "px");
+            this.gridDiv.style.setProperty("--tile-height", this.map.tileHeight + "px");
             this.gridDiv.style.setProperty("--columns-count", this.map.width.toFixed());
             this.gridDiv.style.setProperty("--rows-count", this.map.height.toFixed());
 
             this.gridDiv.clearChildren();
             for (const layer of this.map.layers)
-                this.gridDiv.append(<div class={ ["layer"] }>{ this.buildLayer(layer) }</div>);
+            {
+                if ("cells" in layer)
+                    this.gridDiv.append(<div class={ ["layer", "cell-layer"] }>{ this.buildCells(layer as Game.World.CellLayer) }</div>);
+                else if ("objects" in layer)
+                    this.gridDiv.append(<div class={ ["layer", "object-layer"] }>{ this.buildObjects(layer as Game.World.ObjectLayer) }</div>);
+
+            }
             this.gridDiv.append(<div class={ ["layer", "ground-layer"] }>{ this.buildGround() }</div>);
             this.gridDiv.append(<div class={ ["layer", "player-layer"] }>{ this.playerDiv = <div class="player" style={ { gridColumn: 1, gridRow: 1 } } /> as HTMLDivElement }</div>);
-            this.gridDiv.append(<div class={ ["layer", "object-layer"] }>{ this.buildObjects() }</div>);
 
             this.player.teleport(this.playerPosition);
 
@@ -80,7 +85,7 @@ namespace Views.World
             }
         }
 
-        private * buildLayer(layer: Game.World.Layer)
+        private * buildCells(layer: Game.World.CellLayer)
         {
             for (const { x, y, value } of layer.cells)
                 if (value)
@@ -94,10 +99,11 @@ namespace Views.World
                 }
         }
 
-        private * buildObjects()
+        private * buildObjects(layer: Game.World.ObjectLayer)
         {
-            for (const object of this.map.objects.filter(x => x instanceof Game.World.Object))
-                yield new MapObject(object);
+            for (const obj of layer.objects.filter(x => x))
+                if ("img" in obj)
+                    yield new MapObject(obj);
         }
 
         public refreshObjects()
@@ -210,6 +216,7 @@ namespace Views.World
                 this.coordinatesSpan.innerText = this.playerPosition.x + ":" + this.playerPosition.y;
             }
 
+            console.log("object", object);
             if (object)
             {   // interact with object
                 this.stopAutoMove();
@@ -218,6 +225,16 @@ namespace Views.World
                     const tale = object.tale.startsWith("/") ? object.tale : { link: this.map.link, text: object.tale };
                     Game.Story.show(tale, object.action ?? "Examine", true);
                 }
+                return;
+            }
+
+            const teleporter = this.map.getTeleporter(this.playerPosition);
+            if (teleporter)
+            {
+                console.log("teleporter", teleporter);
+                this.stopAutoMove();
+                if (teleporter.map) Game.World.goto(teleporter.map, teleporter.destination);
+                else this.player.teleport(teleporter.destination);
                 return;
             }
 

@@ -1,14 +1,12 @@
 {
     "automappingRulesFile": "",
-    "commands": [
-    ],
+    "commands": [],
     "compatibilityVersion": 1100,
     "extensionsPath": "extensions",
     "folders": [
         "."
     ],
-    "properties": [
-    ],
+    "properties": [],
     "propertyTypes": [
         {
             "color": "#ffff69e6",
@@ -153,6 +151,52 @@
             "useAs": [
                 "object",
                 "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 27,
+            "members": [
+                {
+                    "name": "x",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "y",
+                    "type": "int",
+                    "value": 0
+                }
+            ],
+            "name": "Point",
+            "type": "class",
+            "useAs": [
+                "property",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffbbbe09",
+            "drawFill": true,
+            "id": 25,
+            "members": [
+                {
+                    "name": "destination",
+                    "propertyType": "Point",
+                    "type": "class",
+                    "value": {}
+                },
+                {
+                    "name": "map",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Teleporter",
+            "type": "class",
+            "useAs": [
+                "object"
             ]
         },
         {

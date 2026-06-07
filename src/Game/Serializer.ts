@@ -39,6 +39,12 @@ namespace Game.Serializer
         return new constructor(...params);
     }
 
+    export function isKnown(type: string | Object): boolean
+    {
+        if (typeof type === "string") return knownTypes[type] != null;
+        else return Object.values(knownTypes).some(x => x == type);
+    }
+
     export function getConstructor(type: string): ConstructorFunction
     {
         const prototype = knownTypes[type];

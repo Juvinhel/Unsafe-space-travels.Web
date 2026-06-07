@@ -2,7 +2,7 @@ namespace Views.World
 {
     export class MapObject extends HTMLElement
     {
-        constructor (object: Game.World.Object)
+        constructor (object: Game.World.Obj)
         {
             super();
 
@@ -42,20 +42,20 @@ namespace Views.World
         public get type(): string { return this.internalType; }
         public set type(value: string)
         {
-            this.classList.remove(this.internalType?.toLowerCase());
-            this.classList.add(value?.toLowerCase());
+            if (this.internalType) this.classList.remove(this.internalType.toLowerCase());
+            if (value) this.classList.add(value.toLowerCase());
             this.internalType = value;
         }
 
-        public object: Game.World.Object;
+        public object: Game.World.Obj;
 
         public refresh()
         {
             this.x = this.object.x;
             this.y = this.object.y;
             this.img = this.object.img;
-            this.type = Game.Serializer.getType(this.object);
-            this.hidden = !!this.object.hidden;
+            this.type = Game.Serializer.tryGetType(this.object);
+            if ("hidden" in this.object) this.hidden = !!this.object.hidden;
         }
     }
 }
