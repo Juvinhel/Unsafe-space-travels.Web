@@ -12,6 +12,7 @@ namespace Game.World
 
         public ground: FixedMatrix<Ground>;
         public layers: Layer[];
+
         public get objects(): Obj[]
         {
             return this.layers.filter(x => "objects" in x).mapMany(x => x.objects as Obj[]);

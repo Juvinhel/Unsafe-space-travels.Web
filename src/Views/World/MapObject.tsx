@@ -12,15 +12,19 @@ namespace Views.World
 
         static get observedAttributes()
         {
-            return ["x", "y", "img"];
+            return ["x", "y", "width", "height", "img"];
         }
 
         attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null)
         {
             switch (name)
             {
-                case "x": this.style.gridColumn = (this.x + 1).toString(); break;
-                case "y": this.style.gridRow = (this.y + 1).toString(); break;
+                case "x": this.style.gridColumnStart = (this.x + 1).toFixed(0); break;
+                case "y": this.style.gridRowStart = (this.y + 1).toFixed(0); break;
+
+                case "width": this.style.gridColumnEnd = (this.x + this.width + 1).toFixed(0); break;
+                case "height": this.style.gridRowEnd = (this.y + this.height + 1).toFixed(0); break;
+
                 case "img": this.style.backgroundImage = this.img ? "url('" + this.img + "')" : "none"; break;
             }
         }
@@ -30,6 +34,12 @@ namespace Views.World
 
         public get y(): number { return parseInt(this.getAttribute("y")); }
         public set y(value: number) { this.setAttribute("y", value.toFixed(0)); }
+
+        public get width(): number { return parseInt(this.getAttribute("width")); }
+        public set width(value: number) { this.setAttribute("width", value.toFixed(0)); }
+
+        public get height(): number { return parseInt(this.getAttribute("height")); }
+        public set height(value: number) { this.setAttribute("height", value.toFixed(0)); }
 
         public get img(): string { return this.getAttribute("img"); }
         public set img(value: string)
@@ -53,6 +63,8 @@ namespace Views.World
         {
             this.x = this.object.x;
             this.y = this.object.y;
+            this.width = this.object.width;
+            this.height = this.object.height;
             this.img = this.object.img;
             this.type = Game.Serializer.tryGetType(this.object);
             this.hidden = !!this.object["hidden"];
