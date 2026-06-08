@@ -86,8 +86,8 @@ namespace Game.World
         img?: string;
     };
 
-    export const GroundType = ["Default", "Passable", "Impassable"] as const;
-    export type Ground = typeof GroundType[number];
+    export const GroundType = ["Passable"] as const;
+    export type Ground = null | typeof GroundType[number];
 
     export type Point = {
         x: number;

@@ -48,9 +48,17 @@ namespace Game.World
                 }
             }
 
-            const groundLayerElement = root.querySelector(":scope > layer");
-            const groundLayer = this.getLayer(groundLayerElement);
-            const ground = groundLayer.map<Ground>((x, y, v) => v == 0 ? "Impassable" : "Passable");
+            const ground = new FixedMatrix<Ground>(width, height);// groundLayer.map<Ground>((x, y, v) => v == 0 ? "Impassable" : "Passable");
+            for (const layerElement of root.querySelectorAll(":scope > layer"))
+            {
+                if (layerElement.getAttribute("name") == "Ground") break;
+
+                const tiles = this.getLayer(layerElement);
+                for (let y = 0; y < ground.height; ++y)
+                    for (let x = 0; x < ground.width; ++x)
+                        if (tiles.get(x, y))
+                            ground.set(x, y, "Passable");
+            }
 
             const layers: Layer[] = [];
             for (const layerElement of root.querySelectorAll(":scope > layer, :scope > objectgroup"))
