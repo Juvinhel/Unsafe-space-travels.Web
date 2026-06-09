@@ -67,10 +67,12 @@ namespace Views.Inventory
                 <div>
                     <label>Category:</label><span>{ currentItem.category }</span>
                     <p>{ currentItem.description }</p>
-                    <label class="action-cost-text"><img src="img/icons/battle/action.svg" />Action Cost:</label><span class="action-cost-text">{ Integer.toString(currentItem.actionCost ?? 0) }</span>
+                    //TODO:
+                    {/*                    <label class="action-cost-text"><img src="img/icons/battle/action.svg" />Action Cost:</label><span class="action-cost-text">{ Integer.toString(currentItem.actionCost ?? 0) }</span>
                     <label class="energy-cost-text"><img src="img/icons/battle/energy.svg" />Energy Cost:</label><span class="energy-cost-text">{ Integer.toString(currentItem.energyCost ?? 0) }</span>
                     <label class="cooldown-cost-text"><img src="img/icons/battle/cooldown.svg" />Cooldown:</label><span class="cooldown-cost-text">{ Integer.toString(currentItem.cooldownCost ?? 0) }</span>
                     <label class="pre-cooldown-text"><img src="img/icons/battle/cooldown.svg" />Pre-cooldown:</label><span class="pre-cooldown-text">{ Integer.toString(currentItem.cooldown ?? 0) }</span>
+                 */}
                     <label class="quantity-text"><img src="img/icons/inventory/quantity.svg" />Quantity:</label><span class="quantity-text">{ currentItem.quantity ?? 0 }</span>
                 </div>
                 { isInQuickSlot ?

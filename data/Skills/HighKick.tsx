@@ -1,5 +1,5 @@
 @Game.Serializer.known()
-export class HighKick implements Game.Battle.Skill
+export class HighKick extends Game.Battle.Skill
 {
     public name = "High Kick";
     public icon = "img/icons/battle/skills/high-kick.svg";
@@ -10,6 +10,7 @@ export class HighKick implements Game.Battle.Skill
     public cooldown = 0;
     public target = "enemy" as const;
     public category = "attack" as const;
+
     public available(state: Game.Battle.State): boolean
     {
         if (Game.Serializer.getType(state.selfActions.last()) == "Skills.Kick") return true;

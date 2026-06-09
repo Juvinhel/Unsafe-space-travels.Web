@@ -1,5 +1,5 @@
 @Game.Serializer.known()
-export class CalmDown implements Game.Battle.Skill
+export class CalmDown extends Game.Battle.Skill
 {
     public name = "Calm Down";
     public icon = "img/icons/battle/skills/calm-down.svg";
@@ -10,6 +10,12 @@ export class CalmDown implements Game.Battle.Skill
     public cooldown = 0;
     public target = "self" as const;
     public category = "utility" as const;
+
+    public available(state: Game.Battle.State): boolean
+    {
+        return true;
+    }
+
     public activationText(state: Game.Battle.State): Node
     {
         return <span>Reduces arousal by 20.</span>;

@@ -20,7 +20,9 @@ namespace Game.Battle
                 skill.cooldown ??= 0;
                 return skill;
             }),
-            items: Game.data.player.backpack.quickSlots.mapAndFilter(itemName =>
+            //TODO:
+            items: [],
+            /*items: Game.data.player.backpack.quickSlots.mapAndFilter(itemName =>
             {
                 const item = Serializer.create(itemName) as Game.Inventory.Consumable;
                 if (!item) return undefined;
@@ -28,7 +30,7 @@ namespace Game.Battle
                 item.quantity = Game.data.player.backpack.items[itemName];
                 if (item.quantity <= 0) return undefined;
                 return item;
-            }) as Game.Inventory.Consumable[],
+            }) as Game.Inventory.Consumable[],*/
             stats: {
                 actionCount: Game.data.player.stats.actionCount,
                 maxActionCount: Game.data.player.stats.actionCount,

@@ -2,9 +2,28 @@ namespace Game.Battle
 {
     export const knownSkills: { [name: string]: new (...args: any[]) => Skill; } = {};
 
-    export interface Skill extends Action
+    //export interface Skill extends Action
+    //{
+    //    constructor: Function;
+    //
+    //    category: SkillCategory;
+    //}
+
+    export abstract class Skill implements Action 
     {
-        constructor: Function;
+        readonly name: string;
+        readonly icon: string;
+        readonly description: string;
+        readonly target: ActionTarget;
+
+        actionCost?: number;
+        energyCost?: number;
+        cooldownCost?: number;
+        cooldown?: number;
+
+        abstract available(state: Game.Battle.State): boolean;
+        abstract activationText(state: Game.Battle.State): Node;
+        abstract execute(state: Game.Battle.State): void;
 
         category: SkillCategory;
     }

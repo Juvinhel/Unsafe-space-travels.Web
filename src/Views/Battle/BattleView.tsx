@@ -189,7 +189,8 @@ namespace Views.Battle
                 const button = document.createElement("action-button") as Controls.ActionButton;
                 button.text = item.name;
                 button.icon = item.icon;
-                button.actionCost = item.actionCost;
+                //TODO:
+                //button.actionCost = item.actionCost;
                 button.quantityCost = item.quantity;
                 button["item"] = item;
                 if (this.isItemAvailable(this.player, item))
@@ -202,9 +203,10 @@ namespace Views.Battle
 
         private isItemAvailable(combatant: Game.Battle.Combatant, item: Game.Inventory.Consumable): boolean
         {
-            if (item.actionCost != Number.POSITIVE_INFINITY && item.actionCost > combatant.stats.actionCount) return false;
-            if (item.quantity <= 0) return false;
-            if (item.available && !item.available(this.calcBattleState(combatant))) return false;
+            //TODO:
+            //if (item.actionCost != Number.POSITIVE_INFINITY && item.actionCost > combatant.stats.actionCount) return false;
+            //if (item.quantity <= 0) return false;
+            //if (item.available && !item.available(this.calcBattleState(combatant))) return false;
             return true;
         }
 
@@ -268,16 +270,17 @@ namespace Views.Battle
         {
             if (!this.isItemAvailable(this.player, item)) return;
 
-            if (item.actionCost)
-                this.player.stats.actionCount -= item.actionCost == Number.POSITIVE_INFINITY ? this.player.stats.actionCount : item.actionCost;
-            if (item.actionCost)
-                this.player.stats.energy -= item.energyCost == Number.POSITIVE_INFINITY ? this.player.stats.energy : item.energyCost;
-            if (item.cooldownCost)
-                item.cooldown += item.cooldownCost;
+            //TODO:
+            //if (item.actionCost)
+            //    this.player.stats.actionCount -= item.actionCost == Number.POSITIVE_INFINITY ? this.player.stats.actionCount : item.actionCost;
+            //if (item.actionCost)
+            //    this.player.stats.energy -= item.energyCost == Number.POSITIVE_INFINITY ? this.player.stats.energy : item.energyCost;
+            //if (item.cooldownCost)
+            //    item.cooldown += item.cooldownCost;
             item.quantity -= 1;
 
-            const activationText = <action-line class="player-action" action={ item } name={ item.name } icon={ item.icon } actionCost={ item.actionCost }>{ item.activationText(this.calcBattleState(this.player)) }</action-line>;
-            this.flowList.appendChild(activationText);
+            //const activationText = <action-line class="player-action" action={ item } name={ item.name } icon={ item.icon } actionCost={ item.actionCost }>{ item.activationText(this.calcBattleState(this.player)) }</action-line>;
+            //this.flowList.appendChild(activationText);
 
             this.refreshPlayerStats();
             this.showPlayerItems();
@@ -369,9 +372,10 @@ namespace Views.Battle
 
             this.player.stats.actionCount = this.player.stats.maxActionCount;
             this.enemy.stats.actionCount = this.enemy.stats.maxActionCount;
-            for (const action of [...this.player.skills, ...this.player.items, ...this.enemy.skills, ...this.enemy.items])
-                if (action.cooldown > 0)
-                    action.cooldown -= 1;
+            //TODO:
+            //for (const action of [...this.player.skills, ...this.player.items, ...this.enemy.skills, ...this.enemy.items])
+            //    if (action.cooldown > 0)
+            //        action.cooldown -= 1;
 
             this.beginTurn();
 

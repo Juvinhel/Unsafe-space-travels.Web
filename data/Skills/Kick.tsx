@@ -1,5 +1,5 @@
 @Game.Serializer.known()
-export class Kick implements Game.Battle.Skill
+export class Kick extends Game.Battle.Skill
 {
     public name = "Kick";
     public icon = "img/icons/battle/skills/kick.svg";
@@ -10,6 +10,12 @@ export class Kick implements Game.Battle.Skill
     public cooldown = 0;
     public target = "enemy" as const;
     public category = "attack" as const;
+
+    public available(state: Game.Battle.State): boolean
+    {
+        return true;
+    }
+
     public activationText(state: Game.Battle.State): Node
     {
         return <span>Kick your enemy in the face.</span>;

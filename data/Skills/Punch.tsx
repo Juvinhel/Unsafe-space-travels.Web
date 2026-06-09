@@ -1,5 +1,5 @@
 @Game.Serializer.known()
-export class Punch implements Game.Battle.Skill
+export class Punch extends Game.Battle.Skill
 {
     public name = "Punch";
     public icon = "img/icons/battle/skills/punch.svg";
@@ -10,10 +10,17 @@ export class Punch implements Game.Battle.Skill
     public cooldown = 0;
     public target = "enemy" as const;
     public category = "attack" as const;
+
+    public available(state: Game.Battle.State): boolean
+    {
+        return true;
+    }
+
     public activationText(state: Game.Battle.State): Node
     {
         return <span>Punch your enemy in the face.</span>;
     }
+
     public async execute(state: Game.Battle.State): Promise<void>
     {
         state.opponent.stats.health -= 10;

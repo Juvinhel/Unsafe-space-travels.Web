@@ -2,18 +2,16 @@ namespace Game.Battle
 {
     export interface Action
     {
-        name: string;
-        icon: string;
-        description: string;
+        readonly name: string;
+        readonly icon: string;
+        readonly description: string;
+        readonly target: ActionTarget;
+        readonly actionCost?: number;
+        readonly energyCost?: number;
+        readonly cooldownCost?: number;
 
-        actionCost?: number;
-        energyCost?: number;
-        cooldownCost?: number;
         cooldown?: number;
-
-        target: ActionTarget;
-
-        available?(state: Game.Battle.State): boolean;
+        available(state: Game.Battle.State): boolean;
         activationText(state: Game.Battle.State): Node;
         execute(state: Game.Battle.State): void;
     }

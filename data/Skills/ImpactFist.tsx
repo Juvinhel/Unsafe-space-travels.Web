@@ -1,5 +1,5 @@
 @Game.Serializer.known()
-export class ImpactFist implements Game.Battle.Skill
+export class ImpactFist extends Game.Battle.Skill
 {
     public name = "Impact Fist";
     public icon = "img/icons/battle/skills/impact-fist.svg";
@@ -10,6 +10,12 @@ export class ImpactFist implements Game.Battle.Skill
     public cooldown = 0;
     public target = "enemy" as const;
     public category = "attack" as const;
+
+    public available(state: Game.Battle.State): boolean
+    {
+        return true;
+    }
+
     public activationText(state: Game.Battle.State): Node
     {
         return <span>{ this.description }</span>;

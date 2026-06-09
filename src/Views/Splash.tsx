@@ -51,30 +51,15 @@ namespace Views
                     //@ts-ignore
                     const imports = await import("/data/" + file);
                     for (const [key, value] of Object.entries(imports))
-                    {
-                        if (typeof (value) === "object")
-                        {
-                            if (value instanceof Game.Character)
-                                Game.knownCharacters[value.name] = value;
-                        }
+                        if (typeof (value) === "object") loadObject(value);
                         else if (typeof (value) === "function" && /^\s*class\s+/.test(value.toString()))
-                        {
-                            // check if skill
-                            //if (value.prototype instanceof Game.Battle.Skill)
-                            //{
-                            //
-                            //}
-                        }
-                    }
-                    //TODO:
+                            loadType(value);
                     break;
                 case "json":
                     const text = await (await fetch("data/" + file)).text();
                     const object = Game.Serializer.deserialize(text, "JSON");
-
-                    if (object instanceof Game.Character)
-                        Game.knownCharacters[object.name] = object;
-
+                    if (Array.isArray(object)) for (const obj of object) loadObject(obj);
+                    else loadObject(object);
                     break;
             }
             ++progress.value;
@@ -96,5 +81,19 @@ namespace Views
         }
 
         UI.Dialog.close(splash);
+    }
+
+    function loadType(object: Function)
+    {
+        const type = Game.Serializer.tryGetType(object);
+        if (!type) console.log("Unknown declared type!", type);
+        if (object.prototype instanceof Game.Battle.Skill)
+            Game.Battle.knownSkills[type] = object as any;
+    }
+
+    function loadObject(object: any)
+    {
+        if (object instanceof Game.Character) Game.knownCharacters[object.name] = object;
+        else console.log("Unknown declared object!", object);
     }
 }

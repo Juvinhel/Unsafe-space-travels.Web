@@ -1,5 +1,5 @@
 @Game.Serializer.known()
-export class Firestorm implements Game.Battle.Skill
+export class Firestorm extends Game.Battle.Skill
 {
     public name = "Firestorm";
     public icon = "img/icons/battle/skills/firestorm.svg";
@@ -10,6 +10,12 @@ export class Firestorm implements Game.Battle.Skill
     public cooldown = 2; // initial cooldown
     public target = "enemy" as const;
     public category = "attack" as const;
+
+    public available(state: Game.Battle.State): boolean
+    {
+        return true;
+    }
+
     public activationText(state: Game.Battle.State): Node    
     {
         return <span>Cast Firestorm</span>;
